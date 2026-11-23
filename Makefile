@@ -1,0 +1,50 @@
+# Cyclone (C64) - Oscar64 Build System
+
+OSCAR64 ?= /Users/peter/bin/oscar64
+OSCAR64_INC ?= /Users/peter/Library/CloudStorage/GoogleDrive-dornbach@gmail.com/My Drive/Programozas/c64/oscar64-main-20260818/include
+VICE_DIR ?= /Applications/vice-arm64-gtk3-3.10/bin
+X64SC ?= $(VICE_DIR)/x64sc
+C1541 ?= $(VICE_DIR)/c1541
+PYTHON ?= /usr/bin/python3
+
+BUILD_DIR = build
+PRG = $(BUILD_DIR)/cyclone.prg
+D64 = $(BUILD_DIR)/cyclone.d64
+
+OSCAR_FLAGS = -ii="$(OSCAR64_INC)" -O2 -Oo -tm=c64 -n -xz
+
+SRCS = src/main.c src/world.c src/raster.c src/scroller.c src/hud.c
+HDRS = src/memmap.h src/world.h src/raster.h src/scroller.h src/hud.h generated/islands_data.h
+
+.PHONY: all extract assets clean run run-ntsc disk screenshot
+
+all: $(PRG)
+
+extract:
+	$(PYTHON) tools/extract_spectrum.py
+
+assets:
+	$(PYTHON) tools/build_assets.py
+
+$(BUILD_DIR):
+	mkdir -p $(BUILD_DIR)
+
+$(PRG): $(SRCS) $(HDRS) | $(BUILD_DIR)
+	$(OSCAR64) $(OSCAR_FLAGS) -o=$(PRG) $(SRCS)
+
+disk: $(PRG)
+	rm -f $(D64)
+	$(C1541) -format "cyclone,c6" d64 $(D64) -write $(PRG) "cyclone"
+
+run: $(PRG)
+	$(X64SC) -pal -autostartprgmode 1 -autostart $(PRG)
+
+run-ntsc: $(PRG)
+	$(X64SC) -ntsc -autostartprgmode 1 -autostart $(PRG)
+
+screenshot: $(PRG)
+	$(X64SC) -pal -warp -sounddev dummy -autostartprgmode 1 -limitcycles 6000000 -exitscreenshot $(BUILD_DIR)/screenshot_pal.png -autostart $(PRG) || true
+	$(X64SC) -ntsc -warp -sounddev dummy -autostartprgmode 1 -limitcycles 6000000 -exitscreenshot $(BUILD_DIR)/screenshot_ntsc.png -autostart $(PRG) || true
+
+clean:
+	rm -rf $(BUILD_DIR)

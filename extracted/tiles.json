@@ -1,0 +1,2326 @@
+{
+  "0x00": {
+    "id": 0,
+    "height": 1,
+    "category": "sea",
+    "north_slices": [
+      128
+    ],
+    "south_slices": [
+      128
+    ],
+    "count": 10485
+  },
+  "0x04": {
+    "id": 4,
+    "height": 1,
+    "category": "beach",
+    "north_slices": [
+      130
+    ],
+    "south_slices": [
+      130
+    ],
+    "count": 66
+  },
+  "0x05": {
+    "id": 5,
+    "height": 1,
+    "category": "beach",
+    "north_slices": [
+      3
+    ],
+    "south_slices": [
+      5
+    ],
+    "count": 2
+  },
+  "0x06": {
+    "id": 6,
+    "height": 1,
+    "category": "beach",
+    "north_slices": [
+      4
+    ],
+    "south_slices": [
+      6
+    ],
+    "count": 6
+  },
+  "0x07": {
+    "id": 7,
+    "height": 1,
+    "category": "beach",
+    "north_slices": [
+      5
+    ],
+    "south_slices": [
+      3
+    ],
+    "count": 2
+  },
+  "0x08": {
+    "id": 8,
+    "height": 1,
+    "category": "beach",
+    "north_slices": [
+      6
+    ],
+    "south_slices": [
+      4
+    ],
+    "count": 6
+  },
+  "0x09": {
+    "id": 9,
+    "height": 1,
+    "category": "beach",
+    "north_slices": [
+      16
+    ],
+    "south_slices": [
+      17
+    ],
+    "count": 4
+  },
+  "0x0a": {
+    "id": 10,
+    "height": 1,
+    "category": "beach",
+    "north_slices": [
+      17
+    ],
+    "south_slices": [
+      16
+    ],
+    "count": 8
+  },
+  "0x0b": {
+    "id": 11,
+    "height": 1,
+    "category": "beach",
+    "north_slices": [
+      18
+    ],
+    "south_slices": [
+      19
+    ],
+    "count": 3
+  },
+  "0x0c": {
+    "id": 12,
+    "height": 1,
+    "category": "beach",
+    "north_slices": [
+      19
+    ],
+    "south_slices": [
+      18
+    ],
+    "count": 4
+  },
+  "0x0d": {
+    "id": 13,
+    "height": 1,
+    "category": "beach",
+    "north_slices": [
+      20
+    ],
+    "south_slices": [
+      21
+    ],
+    "count": 4
+  },
+  "0x0e": {
+    "id": 14,
+    "height": 1,
+    "category": "beach",
+    "north_slices": [
+      21
+    ],
+    "south_slices": [
+      20
+    ],
+    "count": 9
+  },
+  "0x10": {
+    "id": 16,
+    "height": 2,
+    "category": "grass_flat",
+    "north_slices": [
+      135,
+      129
+    ],
+    "south_slices": [
+      135,
+      129
+    ],
+    "count": 1044
+  },
+  "0x11": {
+    "id": 17,
+    "height": 2,
+    "category": "cliff_slope",
+    "north_slices": [
+      135,
+      39
+    ],
+    "south_slices": [
+      135,
+      129
+    ],
+    "count": 134
+  },
+  "0x12": {
+    "id": 18,
+    "height": 2,
+    "category": "cliff_slope",
+    "north_slices": [
+      24,
+      25
+    ],
+    "south_slices": [
+      29,
+      33
+    ],
+    "count": 15
+  },
+  "0x13": {
+    "id": 19,
+    "height": 2,
+    "category": "cliff_slope",
+    "north_slices": [
+      135,
+      40
+    ],
+    "south_slices": [
+      135,
+      41
+    ],
+    "count": 63
+  },
+  "0x14": {
+    "id": 20,
+    "height": 2,
+    "category": "cliff_slope",
+    "north_slices": [
+      30,
+      34
+    ],
+    "south_slices": [
+      24,
+      26
+    ],
+    "count": 19
+  },
+  "0x15": {
+    "id": 21,
+    "height": 2,
+    "category": "grass_flat",
+    "north_slices": [
+      135,
+      129
+    ],
+    "south_slices": [
+      135,
+      39
+    ],
+    "count": 101
+  },
+  "0x16": {
+    "id": 22,
+    "height": 2,
+    "category": "cliff_slope",
+    "north_slices": [
+      29,
+      33
+    ],
+    "south_slices": [
+      24,
+      25
+    ],
+    "count": 15
+  },
+  "0x17": {
+    "id": 23,
+    "height": 2,
+    "category": "cliff_slope",
+    "north_slices": [
+      135,
+      41
+    ],
+    "south_slices": [
+      135,
+      40
+    ],
+    "count": 66
+  },
+  "0x18": {
+    "id": 24,
+    "height": 2,
+    "category": "cliff_slope",
+    "north_slices": [
+      24,
+      26
+    ],
+    "south_slices": [
+      30,
+      34
+    ],
+    "count": 25
+  },
+  "0x19": {
+    "id": 25,
+    "height": 2,
+    "category": "cliff_slope",
+    "north_slices": [
+      135,
+      43
+    ],
+    "south_slices": [
+      135,
+      41
+    ],
+    "count": 11
+  },
+  "0x1a": {
+    "id": 26,
+    "height": 2,
+    "category": "cliff_slope",
+    "north_slices": [
+      135,
+      40
+    ],
+    "south_slices": [
+      135,
+      44
+    ],
+    "count": 9
+  },
+  "0x1b": {
+    "id": 27,
+    "height": 2,
+    "category": "cliff_slope",
+    "north_slices": [
+      135,
+      41
+    ],
+    "south_slices": [
+      135,
+      43
+    ],
+    "count": 8
+  },
+  "0x1c": {
+    "id": 28,
+    "height": 2,
+    "category": "cliff_slope",
+    "north_slices": [
+      135,
+      44
+    ],
+    "south_slices": [
+      135,
+      40
+    ],
+    "count": 11
+  },
+  "0x1f": {
+    "id": 31,
+    "height": 2,
+    "category": "helipad",
+    "north_slices": [
+      137,
+      131
+    ],
+    "south_slices": [
+      137,
+      131
+    ],
+    "count": 24
+  },
+  "0x24": {
+    "id": 36,
+    "height": 2,
+    "category": "apron",
+    "north_slices": [
+      135,
+      136
+    ],
+    "south_slices": [
+      135,
+      136
+    ],
+    "count": 11
+  },
+  "0x30": {
+    "id": 48,
+    "height": 3,
+    "category": "grass_flat",
+    "north_slices": [
+      135,
+      135,
+      129
+    ],
+    "south_slices": [
+      135,
+      135,
+      129
+    ],
+    "count": 2025
+  },
+  "0x31": {
+    "id": 49,
+    "height": 3,
+    "category": "cliff_slope",
+    "north_slices": [
+      135,
+      135,
+      39
+    ],
+    "south_slices": [
+      135,
+      135,
+      129
+    ],
+    "count": 325
+  },
+  "0x32": {
+    "id": 50,
+    "height": 3,
+    "category": "cliff_slope",
+    "north_slices": [
+      24,
+      135,
+      25
+    ],
+    "south_slices": [
+      29,
+      94,
+      33
+    ],
+    "count": 47
+  },
+  "0x33": {
+    "id": 51,
+    "height": 3,
+    "category": "cliff_slope",
+    "north_slices": [
+      135,
+      135,
+      40
+    ],
+    "south_slices": [
+      135,
+      135,
+      41
+    ],
+    "count": 185
+  },
+  "0x34": {
+    "id": 52,
+    "height": 3,
+    "category": "cliff_slope",
+    "north_slices": [
+      30,
+      92,
+      34
+    ],
+    "south_slices": [
+      24,
+      135,
+      26
+    ],
+    "count": 48
+  },
+  "0x35": {
+    "id": 53,
+    "height": 3,
+    "category": "grass_flat",
+    "north_slices": [
+      135,
+      135,
+      129
+    ],
+    "south_slices": [
+      135,
+      135,
+      39
+    ],
+    "count": 408
+  },
+  "0x36": {
+    "id": 54,
+    "height": 3,
+    "category": "cliff_slope",
+    "north_slices": [
+      29,
+      94,
+      33
+    ],
+    "south_slices": [
+      24,
+      135,
+      25
+    ],
+    "count": 36
+  },
+  "0x37": {
+    "id": 55,
+    "height": 3,
+    "category": "cliff_slope",
+    "north_slices": [
+      135,
+      135,
+      41
+    ],
+    "south_slices": [
+      135,
+      135,
+      40
+    ],
+    "count": 166
+  },
+  "0x38": {
+    "id": 56,
+    "height": 3,
+    "category": "cliff_slope",
+    "north_slices": [
+      24,
+      135,
+      26
+    ],
+    "south_slices": [
+      30,
+      92,
+      34
+    ],
+    "count": 47
+  },
+  "0x39": {
+    "id": 57,
+    "height": 3,
+    "category": "cliff_slope",
+    "north_slices": [
+      135,
+      135,
+      43
+    ],
+    "south_slices": [
+      135,
+      135,
+      41
+    ],
+    "count": 31
+  },
+  "0x3a": {
+    "id": 58,
+    "height": 3,
+    "category": "cliff_slope",
+    "north_slices": [
+      135,
+      135,
+      40
+    ],
+    "south_slices": [
+      135,
+      135,
+      44
+    ],
+    "count": 33
+  },
+  "0x3b": {
+    "id": 59,
+    "height": 3,
+    "category": "cliff_slope",
+    "north_slices": [
+      135,
+      135,
+      41
+    ],
+    "south_slices": [
+      135,
+      135,
+      43
+    ],
+    "count": 45
+  },
+  "0x3c": {
+    "id": 60,
+    "height": 3,
+    "category": "cliff_slope",
+    "north_slices": [
+      135,
+      135,
+      44
+    ],
+    "south_slices": [
+      135,
+      135,
+      40
+    ],
+    "count": 29
+  },
+  "0x3d": {
+    "id": 61,
+    "height": 3,
+    "category": "cliff_slope",
+    "north_slices": [
+      24,
+      135,
+      27
+    ],
+    "south_slices": [
+      23,
+      31,
+      33
+    ],
+    "count": 6
+  },
+  "0x3e": {
+    "id": 62,
+    "height": 3,
+    "category": "cliff_slope",
+    "north_slices": [
+      23,
+      32,
+      34
+    ],
+    "south_slices": [
+      24,
+      135,
+      28
+    ],
+    "count": 7
+  },
+  "0x3f": {
+    "id": 63,
+    "height": 3,
+    "category": "cliff_slope",
+    "north_slices": [
+      23,
+      31,
+      33
+    ],
+    "south_slices": [
+      24,
+      135,
+      27
+    ],
+    "count": 1
+  },
+  "0x40": {
+    "id": 64,
+    "height": 3,
+    "category": "cliff_slope",
+    "north_slices": [
+      24,
+      135,
+      28
+    ],
+    "south_slices": [
+      23,
+      32,
+      34
+    ],
+    "count": 11
+  },
+  "0x41": {
+    "id": 65,
+    "height": 3,
+    "category": "cliff_slope",
+    "north_slices": [
+      24,
+      135,
+      25
+    ],
+    "south_slices": [
+      23,
+      31,
+      33
+    ],
+    "count": 1
+  },
+  "0x44": {
+    "id": 68,
+    "height": 3,
+    "category": "cliff_slope",
+    "north_slices": [
+      24,
+      135,
+      26
+    ],
+    "south_slices": [
+      23,
+      32,
+      34
+    ],
+    "count": 1
+  },
+  "0x45": {
+    "id": 69,
+    "height": 3,
+    "category": "helipad",
+    "north_slices": [
+      137,
+      137,
+      131
+    ],
+    "south_slices": [
+      137,
+      137,
+      131
+    ],
+    "count": 25
+  },
+  "0x4b": {
+    "id": 75,
+    "height": 3,
+    "category": "beach",
+    "north_slices": [
+      136,
+      136,
+      130
+    ],
+    "south_slices": [
+      136,
+      136,
+      130
+    ],
+    "count": 10
+  },
+  "0x4d": {
+    "id": 77,
+    "height": 3,
+    "category": "beach",
+    "north_slices": [
+      135,
+      135,
+      8
+    ],
+    "south_slices": [
+      135,
+      135,
+      10
+    ],
+    "count": 5
+  },
+  "0x4f": {
+    "id": 79,
+    "height": 3,
+    "category": "beach",
+    "north_slices": [
+      135,
+      135,
+      10
+    ],
+    "south_slices": [
+      135,
+      135,
+      8
+    ],
+    "count": 4
+  },
+  "0x58": {
+    "id": 88,
+    "height": 4,
+    "category": "grass_flat",
+    "north_slices": [
+      135,
+      135,
+      135,
+      129
+    ],
+    "south_slices": [
+      135,
+      135,
+      135,
+      129
+    ],
+    "count": 1133
+  },
+  "0x59": {
+    "id": 89,
+    "height": 4,
+    "category": "cliff_slope",
+    "north_slices": [
+      135,
+      135,
+      135,
+      39
+    ],
+    "south_slices": [
+      135,
+      135,
+      135,
+      129
+    ],
+    "count": 253
+  },
+  "0x5a": {
+    "id": 90,
+    "height": 4,
+    "category": "cliff_slope",
+    "north_slices": [
+      24,
+      135,
+      135,
+      25
+    ],
+    "south_slices": [
+      29,
+      94,
+      93,
+      33
+    ],
+    "count": 13
+  },
+  "0x5b": {
+    "id": 91,
+    "height": 4,
+    "category": "cliff_slope",
+    "north_slices": [
+      135,
+      135,
+      135,
+      40
+    ],
+    "south_slices": [
+      135,
+      135,
+      135,
+      41
+    ],
+    "count": 129
+  },
+  "0x5c": {
+    "id": 92,
+    "height": 4,
+    "category": "cliff_slope",
+    "north_slices": [
+      30,
+      92,
+      91,
+      34
+    ],
+    "south_slices": [
+      24,
+      135,
+      135,
+      26
+    ],
+    "count": 9
+  },
+  "0x5d": {
+    "id": 93,
+    "height": 4,
+    "category": "grass_flat",
+    "north_slices": [
+      135,
+      135,
+      135,
+      129
+    ],
+    "south_slices": [
+      135,
+      135,
+      135,
+      39
+    ],
+    "count": 277
+  },
+  "0x5e": {
+    "id": 94,
+    "height": 4,
+    "category": "cliff_slope",
+    "north_slices": [
+      29,
+      94,
+      93,
+      33
+    ],
+    "south_slices": [
+      24,
+      135,
+      135,
+      25
+    ],
+    "count": 21
+  },
+  "0x5f": {
+    "id": 95,
+    "height": 4,
+    "category": "cliff_slope",
+    "north_slices": [
+      135,
+      135,
+      135,
+      41
+    ],
+    "south_slices": [
+      135,
+      135,
+      135,
+      40
+    ],
+    "count": 152
+  },
+  "0x60": {
+    "id": 96,
+    "height": 4,
+    "category": "cliff_slope",
+    "north_slices": [
+      24,
+      135,
+      135,
+      26
+    ],
+    "south_slices": [
+      30,
+      92,
+      91,
+      34
+    ],
+    "count": 10
+  },
+  "0x61": {
+    "id": 97,
+    "height": 4,
+    "category": "cliff_slope",
+    "north_slices": [
+      135,
+      135,
+      135,
+      43
+    ],
+    "south_slices": [
+      135,
+      135,
+      135,
+      41
+    ],
+    "count": 33
+  },
+  "0x62": {
+    "id": 98,
+    "height": 4,
+    "category": "cliff_slope",
+    "north_slices": [
+      135,
+      135,
+      135,
+      40
+    ],
+    "south_slices": [
+      135,
+      135,
+      135,
+      44
+    ],
+    "count": 39
+  },
+  "0x63": {
+    "id": 99,
+    "height": 4,
+    "category": "cliff_slope",
+    "north_slices": [
+      135,
+      135,
+      135,
+      41
+    ],
+    "south_slices": [
+      135,
+      135,
+      135,
+      43
+    ],
+    "count": 32
+  },
+  "0x64": {
+    "id": 100,
+    "height": 4,
+    "category": "cliff_slope",
+    "north_slices": [
+      135,
+      135,
+      135,
+      44
+    ],
+    "south_slices": [
+      135,
+      135,
+      135,
+      40
+    ],
+    "count": 28
+  },
+  "0x65": {
+    "id": 101,
+    "height": 4,
+    "category": "cliff_slope",
+    "north_slices": [
+      24,
+      135,
+      135,
+      27
+    ],
+    "south_slices": [
+      23,
+      135,
+      31,
+      33
+    ],
+    "count": 20
+  },
+  "0x66": {
+    "id": 102,
+    "height": 4,
+    "category": "cliff_slope",
+    "north_slices": [
+      23,
+      135,
+      32,
+      34
+    ],
+    "south_slices": [
+      24,
+      135,
+      135,
+      28
+    ],
+    "count": 22
+  },
+  "0x67": {
+    "id": 103,
+    "height": 4,
+    "category": "cliff_slope",
+    "north_slices": [
+      23,
+      135,
+      31,
+      33
+    ],
+    "south_slices": [
+      24,
+      135,
+      135,
+      27
+    ],
+    "count": 15
+  },
+  "0x68": {
+    "id": 104,
+    "height": 4,
+    "category": "cliff_slope",
+    "north_slices": [
+      24,
+      135,
+      135,
+      28
+    ],
+    "south_slices": [
+      23,
+      135,
+      32,
+      34
+    ],
+    "count": 22
+  },
+  "0x6b": {
+    "id": 107,
+    "height": 4,
+    "category": "cliff_slope",
+    "north_slices": [
+      23,
+      135,
+      31,
+      33
+    ],
+    "south_slices": [
+      24,
+      135,
+      135,
+      25
+    ],
+    "count": 1
+  },
+  "0x6d": {
+    "id": 109,
+    "height": 4,
+    "category": "cliff_slope",
+    "north_slices": [
+      24,
+      135,
+      135,
+      27
+    ],
+    "south_slices": [
+      23,
+      31,
+      93,
+      33
+    ],
+    "count": 5
+  },
+  "0x70": {
+    "id": 112,
+    "height": 4,
+    "category": "cliff_slope",
+    "north_slices": [
+      24,
+      135,
+      135,
+      28
+    ],
+    "south_slices": [
+      23,
+      32,
+      91,
+      34
+    ],
+    "count": 6
+  },
+  "0x75": {
+    "id": 117,
+    "height": 4,
+    "category": "helipad",
+    "north_slices": [
+      135,
+      135,
+      135,
+      131
+    ],
+    "south_slices": [
+      135,
+      135,
+      135,
+      131
+    ],
+    "count": 24
+  },
+  "0x7a": {
+    "id": 122,
+    "height": 4,
+    "category": "beach",
+    "north_slices": [
+      135,
+      135,
+      135,
+      130
+    ],
+    "south_slices": [
+      135,
+      135,
+      135,
+      130
+    ],
+    "count": 15
+  },
+  "0x7c": {
+    "id": 124,
+    "height": 4,
+    "category": "beach",
+    "north_slices": [
+      135,
+      135,
+      135,
+      8
+    ],
+    "south_slices": [
+      135,
+      135,
+      135,
+      10
+    ],
+    "count": 3
+  },
+  "0x7e": {
+    "id": 126,
+    "height": 4,
+    "category": "beach",
+    "north_slices": [
+      135,
+      135,
+      135,
+      10
+    ],
+    "south_slices": [
+      135,
+      135,
+      135,
+      8
+    ],
+    "count": 4
+  },
+  "0x82": {
+    "id": 130,
+    "height": 4,
+    "category": "building",
+    "north_slices": [
+      135,
+      90,
+      89,
+      46
+    ],
+    "south_slices": [
+      135,
+      137,
+      87,
+      45
+    ],
+    "count": 18
+  },
+  "0x83": {
+    "id": 131,
+    "height": 4,
+    "category": "building",
+    "north_slices": [
+      135,
+      137,
+      87,
+      45
+    ],
+    "south_slices": [
+      135,
+      90,
+      89,
+      46
+    ],
+    "count": 19
+  },
+  "0x84": {
+    "id": 132,
+    "height": 4,
+    "category": "building",
+    "north_slices": [
+      135,
+      137,
+      87,
+      46
+    ],
+    "south_slices": [
+      135,
+      137,
+      87,
+      45
+    ],
+    "count": 6
+  },
+  "0x85": {
+    "id": 133,
+    "height": 4,
+    "category": "building",
+    "north_slices": [
+      135,
+      137,
+      87,
+      45
+    ],
+    "south_slices": [
+      135,
+      137,
+      87,
+      46
+    ],
+    "count": 5
+  },
+  "0x86": {
+    "id": 134,
+    "height": 4,
+    "category": "helipad",
+    "north_slices": [
+      137,
+      137,
+      137,
+      131
+    ],
+    "south_slices": [
+      137,
+      137,
+      137,
+      131
+    ],
+    "count": 12
+  },
+  "0x8c": {
+    "id": 140,
+    "height": 5,
+    "category": "grass_flat",
+    "north_slices": [
+      135,
+      135,
+      135,
+      135,
+      129
+    ],
+    "south_slices": [
+      135,
+      135,
+      135,
+      135,
+      129
+    ],
+    "count": 515
+  },
+  "0x8d": {
+    "id": 141,
+    "height": 5,
+    "category": "cliff_slope",
+    "north_slices": [
+      135,
+      135,
+      135,
+      135,
+      39
+    ],
+    "south_slices": [
+      135,
+      135,
+      135,
+      135,
+      129
+    ],
+    "count": 121
+  },
+  "0x8e": {
+    "id": 142,
+    "height": 5,
+    "category": "cliff_slope",
+    "north_slices": [
+      24,
+      135,
+      135,
+      135,
+      25
+    ],
+    "south_slices": [
+      29,
+      94,
+      93,
+      93,
+      33
+    ],
+    "count": 6
+  },
+  "0x8f": {
+    "id": 143,
+    "height": 5,
+    "category": "cliff_slope",
+    "north_slices": [
+      135,
+      135,
+      135,
+      135,
+      40
+    ],
+    "south_slices": [
+      135,
+      135,
+      135,
+      135,
+      41
+    ],
+    "count": 60
+  },
+  "0x90": {
+    "id": 144,
+    "height": 5,
+    "category": "cliff_slope",
+    "north_slices": [
+      30,
+      92,
+      91,
+      91,
+      34
+    ],
+    "south_slices": [
+      24,
+      135,
+      135,
+      135,
+      26
+    ],
+    "count": 6
+  },
+  "0x91": {
+    "id": 145,
+    "height": 5,
+    "category": "grass_flat",
+    "north_slices": [
+      135,
+      135,
+      135,
+      135,
+      129
+    ],
+    "south_slices": [
+      135,
+      135,
+      135,
+      135,
+      39
+    ],
+    "count": 104
+  },
+  "0x92": {
+    "id": 146,
+    "height": 5,
+    "category": "cliff_slope",
+    "north_slices": [
+      29,
+      94,
+      93,
+      93,
+      33
+    ],
+    "south_slices": [
+      24,
+      135,
+      135,
+      135,
+      25
+    ],
+    "count": 4
+  },
+  "0x93": {
+    "id": 147,
+    "height": 5,
+    "category": "cliff_slope",
+    "north_slices": [
+      135,
+      135,
+      135,
+      135,
+      41
+    ],
+    "south_slices": [
+      135,
+      135,
+      135,
+      135,
+      40
+    ],
+    "count": 59
+  },
+  "0x94": {
+    "id": 148,
+    "height": 5,
+    "category": "cliff_slope",
+    "north_slices": [
+      24,
+      135,
+      135,
+      135,
+      26
+    ],
+    "south_slices": [
+      30,
+      92,
+      91,
+      91,
+      34
+    ],
+    "count": 5
+  },
+  "0x95": {
+    "id": 149,
+    "height": 5,
+    "category": "cliff_slope",
+    "north_slices": [
+      135,
+      135,
+      135,
+      135,
+      43
+    ],
+    "south_slices": [
+      135,
+      135,
+      135,
+      135,
+      41
+    ],
+    "count": 18
+  },
+  "0x96": {
+    "id": 150,
+    "height": 5,
+    "category": "cliff_slope",
+    "north_slices": [
+      135,
+      135,
+      135,
+      135,
+      40
+    ],
+    "south_slices": [
+      135,
+      135,
+      135,
+      135,
+      44
+    ],
+    "count": 23
+  },
+  "0x97": {
+    "id": 151,
+    "height": 5,
+    "category": "cliff_slope",
+    "north_slices": [
+      135,
+      135,
+      135,
+      135,
+      41
+    ],
+    "south_slices": [
+      135,
+      135,
+      135,
+      135,
+      43
+    ],
+    "count": 21
+  },
+  "0x98": {
+    "id": 152,
+    "height": 5,
+    "category": "cliff_slope",
+    "north_slices": [
+      135,
+      135,
+      135,
+      135,
+      44
+    ],
+    "south_slices": [
+      135,
+      135,
+      135,
+      135,
+      40
+    ],
+    "count": 15
+  },
+  "0x99": {
+    "id": 153,
+    "height": 5,
+    "category": "cliff_slope",
+    "north_slices": [
+      24,
+      135,
+      135,
+      135,
+      27
+    ],
+    "south_slices": [
+      23,
+      135,
+      135,
+      31,
+      33
+    ],
+    "count": 1
+  },
+  "0x9a": {
+    "id": 154,
+    "height": 5,
+    "category": "cliff_slope",
+    "north_slices": [
+      23,
+      135,
+      135,
+      32,
+      34
+    ],
+    "south_slices": [
+      24,
+      135,
+      135,
+      135,
+      28
+    ],
+    "count": 17
+  },
+  "0x9b": {
+    "id": 155,
+    "height": 5,
+    "category": "cliff_slope",
+    "north_slices": [
+      23,
+      135,
+      135,
+      31,
+      33
+    ],
+    "south_slices": [
+      24,
+      135,
+      135,
+      135,
+      27
+    ],
+    "count": 10
+  },
+  "0x9c": {
+    "id": 156,
+    "height": 5,
+    "category": "cliff_slope",
+    "north_slices": [
+      24,
+      135,
+      135,
+      135,
+      28
+    ],
+    "south_slices": [
+      23,
+      135,
+      135,
+      32,
+      34
+    ],
+    "count": 17
+  },
+  "0x9d": {
+    "id": 157,
+    "height": 5,
+    "category": "building",
+    "north_slices": [
+      135,
+      135,
+      90,
+      89,
+      46
+    ],
+    "south_slices": [
+      135,
+      135,
+      137,
+      87,
+      45
+    ],
+    "count": 19
+  },
+  "0x9e": {
+    "id": 158,
+    "height": 5,
+    "category": "building",
+    "north_slices": [
+      135,
+      135,
+      137,
+      87,
+      45
+    ],
+    "south_slices": [
+      135,
+      135,
+      90,
+      89,
+      46
+    ],
+    "count": 24
+  },
+  "0xa0": {
+    "id": 160,
+    "height": 5,
+    "category": "building",
+    "north_slices": [
+      137,
+      137,
+      137,
+      87,
+      45
+    ],
+    "south_slices": [
+      137,
+      137,
+      137,
+      87,
+      46
+    ],
+    "count": 1
+  },
+  "0xa1": {
+    "id": 161,
+    "height": 5,
+    "category": "building",
+    "north_slices": [
+      135,
+      135,
+      88,
+      89,
+      46
+    ],
+    "south_slices": [
+      135,
+      135,
+      137,
+      87,
+      45
+    ],
+    "count": 6
+  },
+  "0xa2": {
+    "id": 162,
+    "height": 5,
+    "category": "concrete",
+    "north_slices": [
+      137,
+      137,
+      137,
+      137,
+      131
+    ],
+    "south_slices": [
+      137,
+      137,
+      137,
+      137,
+      131
+    ],
+    "count": 2
+  },
+  "0xa9": {
+    "id": 169,
+    "height": 5,
+    "category": "tree",
+    "north_slices": [
+      135,
+      135,
+      76,
+      75,
+      71
+    ],
+    "south_slices": [
+      135,
+      135,
+      76,
+      75,
+      74
+    ],
+    "count": 2
+  },
+  "0xaa": {
+    "id": 170,
+    "height": 5,
+    "category": "tree",
+    "north_slices": [
+      135,
+      135,
+      76,
+      75,
+      74
+    ],
+    "south_slices": [
+      135,
+      135,
+      76,
+      75,
+      72
+    ],
+    "count": 1
+  },
+  "0xab": {
+    "id": 171,
+    "height": 5,
+    "category": "tree",
+    "north_slices": [
+      135,
+      135,
+      76,
+      75,
+      72
+    ],
+    "south_slices": [
+      135,
+      135,
+      76,
+      75,
+      74
+    ],
+    "count": 1
+  },
+  "0xac": {
+    "id": 172,
+    "height": 5,
+    "category": "tree",
+    "north_slices": [
+      135,
+      135,
+      76,
+      75,
+      74
+    ],
+    "south_slices": [
+      135,
+      135,
+      76,
+      75,
+      73
+    ],
+    "count": 1
+  },
+  "0xad": {
+    "id": 173,
+    "height": 5,
+    "category": "tree",
+    "north_slices": [
+      135,
+      135,
+      76,
+      75,
+      73
+    ],
+    "south_slices": [
+      135,
+      135,
+      76,
+      75,
+      74
+    ],
+    "count": 3
+  },
+  "0xae": {
+    "id": 174,
+    "height": 5,
+    "category": "tree",
+    "north_slices": [
+      135,
+      135,
+      76,
+      75,
+      74
+    ],
+    "south_slices": [
+      135,
+      135,
+      76,
+      75,
+      74
+    ],
+    "count": 4
+  },
+  "0xaf": {
+    "id": 175,
+    "height": 5,
+    "category": "tree",
+    "north_slices": [
+      135,
+      135,
+      79,
+      78,
+      77
+    ],
+    "south_slices": [
+      135,
+      135,
+      79,
+      78,
+      77
+    ],
+    "count": 11
+  },
+  "0xb0": {
+    "id": 176,
+    "height": 5,
+    "category": "tree",
+    "north_slices": [
+      135,
+      135,
+      82,
+      81,
+      80
+    ],
+    "south_slices": [
+      135,
+      135,
+      82,
+      81,
+      80
+    ],
+    "count": 3
+  },
+  "0xb1": {
+    "id": 177,
+    "height": 5,
+    "category": "tree",
+    "north_slices": [
+      135,
+      135,
+      85,
+      84,
+      83
+    ],
+    "south_slices": [
+      135,
+      135,
+      85,
+      84,
+      83
+    ],
+    "count": 21
+  },
+  "0xb4": {
+    "id": 180,
+    "height": 6,
+    "category": "building",
+    "north_slices": [
+      135,
+      135,
+      90,
+      90,
+      89,
+      46
+    ],
+    "south_slices": [
+      135,
+      135,
+      137,
+      137,
+      87,
+      45
+    ],
+    "count": 18
+  },
+  "0xb5": {
+    "id": 181,
+    "height": 6,
+    "category": "building",
+    "north_slices": [
+      135,
+      135,
+      137,
+      137,
+      87,
+      45
+    ],
+    "south_slices": [
+      135,
+      135,
+      90,
+      90,
+      89,
+      46
+    ],
+    "count": 16
+  },
+  "0xb7": {
+    "id": 183,
+    "height": 6,
+    "category": "building",
+    "north_slices": [
+      135,
+      135,
+      137,
+      137,
+      87,
+      45
+    ],
+    "south_slices": [
+      135,
+      135,
+      137,
+      137,
+      87,
+      46
+    ],
+    "count": 2
+  },
+  "0xb8": {
+    "id": 184,
+    "height": 6,
+    "category": "building",
+    "north_slices": [
+      135,
+      135,
+      135,
+      88,
+      89,
+      46
+    ],
+    "south_slices": [
+      135,
+      135,
+      135,
+      137,
+      88,
+      45
+    ],
+    "count": 1
+  },
+  "0xb9": {
+    "id": 185,
+    "height": 6,
+    "category": "building",
+    "north_slices": [
+      135,
+      135,
+      135,
+      137,
+      87,
+      45
+    ],
+    "south_slices": [
+      135,
+      135,
+      135,
+      88,
+      89,
+      46
+    ],
+    "count": 1
+  },
+  "0xc7": {
+    "id": 199,
+    "height": 6,
+    "category": "tree",
+    "north_slices": [
+      135,
+      135,
+      135,
+      76,
+      75,
+      71
+    ],
+    "south_slices": [
+      135,
+      135,
+      135,
+      76,
+      75,
+      74
+    ],
+    "count": 2
+  },
+  "0xcb": {
+    "id": 203,
+    "height": 6,
+    "category": "tree",
+    "north_slices": [
+      135,
+      135,
+      135,
+      76,
+      75,
+      73
+    ],
+    "south_slices": [
+      135,
+      135,
+      135,
+      76,
+      75,
+      74
+    ],
+    "count": 1
+  },
+  "0xcc": {
+    "id": 204,
+    "height": 6,
+    "category": "tree",
+    "north_slices": [
+      135,
+      135,
+      135,
+      76,
+      75,
+      74
+    ],
+    "south_slices": [
+      135,
+      135,
+      135,
+      76,
+      75,
+      74
+    ],
+    "count": 3
+  },
+  "0xcd": {
+    "id": 205,
+    "height": 6,
+    "category": "tree",
+    "north_slices": [
+      135,
+      135,
+      135,
+      79,
+      78,
+      77
+    ],
+    "south_slices": [
+      135,
+      135,
+      135,
+      79,
+      78,
+      77
+    ],
+    "count": 5
+  },
+  "0xce": {
+    "id": 206,
+    "height": 6,
+    "category": "tree",
+    "north_slices": [
+      135,
+      135,
+      135,
+      82,
+      81,
+      80
+    ],
+    "south_slices": [
+      135,
+      135,
+      135,
+      82,
+      81,
+      80
+    ],
+    "count": 4
+  },
+  "0xcf": {
+    "id": 207,
+    "height": 6,
+    "category": "tree",
+    "north_slices": [
+      135,
+      135,
+      135,
+      85,
+      84,
+      83
+    ],
+    "south_slices": [
+      135,
+      135,
+      135,
+      85,
+      84,
+      83
+    ],
+    "count": 23
+  },
+  "0xd2": {
+    "id": 210,
+    "height": 7,
+    "category": "building",
+    "north_slices": [
+      135,
+      135,
+      90,
+      90,
+      90,
+      89,
+      46
+    ],
+    "south_slices": [
+      135,
+      135,
+      137,
+      137,
+      137,
+      87,
+      45
+    ],
+    "count": 6
+  },
+  "0xd3": {
+    "id": 211,
+    "height": 7,
+    "category": "building",
+    "north_slices": [
+      135,
+      135,
+      137,
+      137,
+      137,
+      87,
+      45
+    ],
+    "south_slices": [
+      135,
+      135,
+      90,
+      90,
+      90,
+      89,
+      46
+    ],
+    "count": 6
+  },
+  "0xda": {
+    "id": 218,
+    "height": 7,
+    "category": "tree",
+    "north_slices": [
+      135,
+      135,
+      135,
+      135,
+      76,
+      75,
+      74
+    ],
+    "south_slices": [
+      135,
+      135,
+      135,
+      135,
+      76,
+      75,
+      74
+    ],
+    "count": 2
+  },
+  "0xde": {
+    "id": 222,
+    "height": 7,
+    "category": "tree",
+    "north_slices": [
+      135,
+      135,
+      135,
+      135,
+      76,
+      75,
+      73
+    ],
+    "south_slices": [
+      135,
+      135,
+      135,
+      135,
+      76,
+      75,
+      74
+    ],
+    "count": 4
+  },
+  "0xe0": {
+    "id": 224,
+    "height": 7,
+    "category": "tree",
+    "north_slices": [
+      135,
+      135,
+      135,
+      135,
+      76,
+      70,
+      73
+    ],
+    "south_slices": [
+      135,
+      135,
+      135,
+      135,
+      76,
+      75,
+      74
+    ],
+    "count": 2
+  },
+  "0xe1": {
+    "id": 225,
+    "height": 7,
+    "category": "tree",
+    "north_slices": [
+      135,
+      135,
+      135,
+      135,
+      79,
+      78,
+      77
+    ],
+    "south_slices": [
+      135,
+      135,
+      135,
+      135,
+      79,
+      78,
+      77
+    ],
+    "count": 5
+  },
+  "0xe2": {
+    "id": 226,
+    "height": 7,
+    "category": "tree",
+    "north_slices": [
+      135,
+      135,
+      135,
+      135,
+      82,
+      81,
+      80
+    ],
+    "south_slices": [
+      135,
+      135,
+      135,
+      135,
+      82,
+      81,
+      80
+    ],
+    "count": 8
+  },
+  "0xe3": {
+    "id": 227,
+    "height": 7,
+    "category": "tree",
+    "north_slices": [
+      135,
+      135,
+      135,
+      135,
+      85,
+      84,
+      83
+    ],
+    "south_slices": [
+      135,
+      135,
+      135,
+      135,
+      85,
+      84,
+      83
+    ],
+    "count": 10
+  },
+  "0xe8": {
+    "id": 232,
+    "height": 8,
+    "category": "spire",
+    "north_slices": [
+      137,
+      137,
+      137,
+      137,
+      137,
+      137,
+      137,
+      131
+    ],
+    "south_slices": [
+      137,
+      137,
+      137,
+      137,
+      137,
+      137,
+      137,
+      131
+    ],
+    "count": 3
+  }
+}
