@@ -31,17 +31,20 @@ void heli_init(void);
 // Respawn helicopter safely on Base Island helipad (keeping remaining lives)
 void heli_respawn_at_base(void);
 
-// Warp helicopter safely above a given island (Phase 2 inspection shortcut)
+// Trigger an immediate mid-air or cyclone crash explosion
+void heli_force_crash(void);
+
+// Warp helicopter safely above a given island
 void heli_warp_to_island(byte island_id);
 
-// Per-frame physics, input processing, 3D collision & smooth camera follow
-// Returns pixel deltas (out_dpx, out_dpy) for scroller_move()
+// Per-frame physics, input, wind drift, 3D collision & smooth camera follow
 void heli_update(sbyte joy_dx, sbyte joy_dy, byte fire_held,
                  sbyte direct_alt_cmd, byte south_view,
+                 byte fuel_empty, sbyte wind_vx, sbyte wind_vy,
                  sbyte *out_dpx, sbyte *out_dpy);
 
-// Update hardware sprite positions & animation pointers (Sprites 0, 1, 2)
-void heli_sync_sprites(byte south_view);
+// Update hardware sprite positions & animation pointers (Sprites 0, 1, 2); returns enable bitmask
+byte heli_sync_sprites(byte south_view);
 
 // Short 3-char compass heading label ("N  ", "NNE", "NE ", ...)
 const char *heli_heading_str(void);

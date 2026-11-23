@@ -13,8 +13,8 @@ D64 = $(BUILD_DIR)/cyclone.d64
 
 OSCAR_FLAGS = -ii="$(OSCAR64_INC)" -O2 -Oo -tm=c64 -n -xz
 
-SRCS = src/main.c src/world.c src/raster.c src/scroller.c src/helicopter.c src/hud.c
-HDRS = src/memmap.h src/world.h src/raster.h src/scroller.h src/helicopter.h src/hud.h generated/islands_data.h
+SRCS = src/main.c src/world.c src/raster.c src/scroller.c src/helicopter.c src/entities.c src/hud.c
+HDRS = src/memmap.h src/world.h src/raster.h src/scroller.h src/helicopter.h src/entities.h src/hud.h generated/islands_data.h
 
 .PHONY: all extract assets clean run run-ntsc disk screenshot
 

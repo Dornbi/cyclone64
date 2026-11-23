@@ -234,6 +234,234 @@ def generate_explosion_frame(frame_idx):
     return grid
 
 
+def generate_crate_frame(frame_idx):
+    """Medical supply crate (MC: 1=White cross/beacon, 2=Yellow/Red crate body, 3=Black frame)."""
+    art0 = [
+        "............",
+        "............",
+        "............",
+        ".....11....." if frame_idx == 0 else "....1..1....",
+        "............",
+        "...333333...",
+        "..32211223..",
+        "..32211223..",
+        "..32111123..",
+        "..32111123..",
+        "..32211223..",
+        "..32211223..",
+        "..33333333..",
+        "...322223...",
+        "....3333....",
+        "............",
+        "............",
+        "............",
+        "............",
+        "............",
+        "............",
+    ]
+    return [[0 if c == '.' else int(c) for c in row] for row in art0]
+
+
+def generate_survivor_frame(frame_idx):
+    """Stranded survivor waving arms on island (MC: 1=White, 2=Orange/Cyan vest, 3=Black)."""
+    if frame_idx == 0:
+        art = [
+            "............",
+            "............",
+            "....3113....",
+            "...1.11.1...",
+            "..1.3223.1..",
+            "...122221...",
+            "....3223....",
+            "....3223....",
+            "....3333....",
+            "....3..3....",
+            "....3..3....",
+            "...33..33...",
+            "............",
+            "............",
+            "............",
+            "............",
+            "............",
+            "............",
+            "............",
+            "............",
+            "............",
+        ]
+    else:
+        art = [
+            "............",
+            "..1......1..",
+            "...131131...",
+            "....1111....",
+            "....3223....",
+            "...322223...",
+            "....3223....",
+            "....3223....",
+            "....3333....",
+            "...3....3...",
+            "...3....3...",
+            "..33....33..",
+            "............",
+            "............",
+            "............",
+            "............",
+            "............",
+            "............",
+            "............",
+            "............",
+            "............",
+        ]
+    return [[0 if c == '.' else int(c) for c in row] for row in art]
+
+
+def generate_winch_frame(length_idx):
+    """Hi-Res winch cable + grappling hook (3 lengths: 7px, 14px, 21px)."""
+    grid = [[0] * 24 for _ in range(21)]
+    end_y = [7, 14, 20][length_idx]
+    for y in range(0, end_y - 2):
+        grid[y][11] = 1
+        if (y & 1) == 0:
+            grid[y][12] = 1
+    # Small grappling hook at bottom of cable
+    hy = end_y - 2
+    for dx in (-1, 0, 1, 2):
+        grid[hy][11 + dx] = 1
+    grid[hy + 1][10] = 1
+    grid[hy + 1][13] = 1
+    grid[hy + 2][11] = 1
+    grid[hy + 2][12] = 1
+    return grid
+
+
+def generate_jet_frame(dir_idx):
+    """
+    Low-flying swept-wing aircraft (4 cardinal directions: 0=East, 1=West, 2=North, 3=South).
+    MC: 1=White highlights, 2=LtBlue/Cyan fuselage, 3=Black cockpit & outline.
+    """
+    # Base shape pointing East (dir_idx == 0) on 21x12 grid
+    east = [
+        "............",
+        "............",
+        "............",
+        "....3.......",
+        "....32......",
+        "...321......",
+        "...3222.....",
+        "..322222....",
+        ".31222233...",
+        "3112222331..",
+        "31222222211.",
+        "3112222331..",
+        ".31222233...",
+        "..322222....",
+        "...3222.....",
+        "...321......",
+        "....32......",
+        "....3.......",
+        "............",
+        "............",
+        "............",
+    ]
+    g = [[0 if c == '.' else int(c) for c in row] for row in east]
+    if dir_idx == 0:
+        return g
+    if dir_idx == 1:
+        return [row[::-1] for row in g]
+    # North / South swept-wing jet
+    north = [
+        "............",
+        ".....11.....",
+        "....3113....",
+        "....3333....",
+        "....3223....",
+        "...322223...",
+        "..32211223..",
+        ".3222112223.",
+        "322222222223",
+        "312222222213",
+        "333322223333",
+        "....3223....",
+        "....3223....",
+        "...322223...",
+        "..31222213..",
+        "..33322333..",
+        ".....33.....",
+        "............",
+        "............",
+        "............",
+        "............",
+    ]
+    ng = [[0 if c == '.' else int(c) for c in row] for row in north]
+    return ng if dir_idx == 2 else ng[::-1]
+
+
+def generate_cyclone_frame(frame_idx):
+    """Swirling Cyclone vortex funnel (4 frames, MC: 1=White wind spray, 2=Red funnel, 3=Black eye)."""
+    grid = [[0] * 12 for _ in range(21)]
+    phase = frame_idx * (math.pi / 2.0)
+    for y in range(21):
+        # Tapered vortex: wide swirling cloud top (y=0..6), spinning funnel body (y=7..20)
+        t = y / 20.0
+        half_w = 5.5 * (1.0 - 0.65 * t)
+        cx = 5.5 + 1.1 * math.sin(phase + y * 0.45)
+        for x in range(12):
+            dx = x - cx
+            adx = abs(dx)
+            if adx <= half_w:
+                # Spiral band pattern rotating each frame
+                band = int((dx * 1.4 + y * 0.8 + frame_idx * 2.0)) & 3
+                if adx < half_w * 0.35 and y < 14:
+                    grid[y][x] = 3  # Dark storm eye
+                elif band == 0:
+                    grid[y][x] = 1  # White foam / spray streak
+                else:
+                    grid[y][x] = 2  # Menacing red cyclone funnel
+    return grid
+
+
+def generate_rain_frame(frame_idx):
+    """Diagonal driving cyclone rain streaks (2 frames, Hi-Res)."""
+    grid = [[0] * 24 for _ in range(21)]
+    shift = frame_idx * 4
+    for streak in range(7):
+        sx = (streak * 7 + shift) % 22
+        sy = (streak * 5 + shift) % 16
+        for k in range(4):
+            x = (sx + 24 - k) % 24
+            y = (sy + k) % 21
+            grid[y][x] = 1
+    return grid
+
+
+def generate_radar_icon(kind):
+    """Tactical Radar Map hardware sprite icons (0=Heli crosshair, 1=Cyclone vortex ring, 2=Base diamond)."""
+    grid = [[0] * 24 for _ in range(21)]
+    if kind == 0:
+        # Crisp pulsing helicopter crosshair
+        for i in range(6, 17):
+            grid[10][i] = 1
+            grid[i - 1][11] = 1
+        grid[10][11] = 0
+    elif kind == 1:
+        # Animated red Cyclone eye + danger radius ring
+        for y in range(21):
+            for x in range(24):
+                dx = x - 11.5
+                dy = y - 10.0
+                d = math.sqrt(dx * dx + dy * dy)
+                if 7.2 <= d <= 8.8 or d <= 2.6:
+                    grid[y][x] = 1
+    else:
+        # Base Island beacon diamond
+        for k in range(5):
+            grid[10 - k][11 + k] = 1
+            grid[10 - k][11 - k] = 1
+            grid[10 + k][11 + k] = 1
+            grid[10 + k][11 - k] = 1
+    return grid
+
+
 def render_preview(mc_helis, rotors, shadows, explosions, out_path):
     """Render a crisp 3x-scaled visual inspection contact sheet of all generated sprites."""
     scale = 3
@@ -326,12 +554,40 @@ def main():
         explosions.append(eg)
         bank[(36 + f) * 64 : (37 + f) * 64] = pack_mc_sprite(eg)
 
+    # Slots 42..43 (ptr 106..107): Medical Crate (2 beacon frames)
+    for f in range(2):
+        bank[(42 + f) * 64 : (43 + f) * 64] = pack_mc_sprite(generate_crate_frame(f))
+
+    # Slots 44..45 (ptr 108..109): Stranded Survivor (2 waving frames)
+    for f in range(2):
+        bank[(44 + f) * 64 : (45 + f) * 64] = pack_mc_sprite(generate_survivor_frame(f))
+
+    # Slots 46..48 (ptr 110..112): Winch Cable & Hook (3 lengths, Hi-Res)
+    for f in range(3):
+        bank[(46 + f) * 64 : (47 + f) * 64] = pack_hr_sprite(generate_winch_frame(f))
+
+    # Slots 49..52 (ptr 113..116): Low-Flying Aircraft (E, W, N, S, MC)
+    for d in range(4):
+        bank[(49 + d) * 64 : (50 + d) * 64] = pack_mc_sprite(generate_jet_frame(d))
+
+    # Slots 53..56 (ptr 117..120): Swirling Cyclone Funnel (4 frames, MC)
+    for f in range(4):
+        bank[(53 + f) * 64 : (54 + f) * 64] = pack_mc_sprite(generate_cyclone_frame(f))
+
+    # Slots 57..58 (ptr 121..122): Diagonal Storm Rain Streaks (2 frames, Hi-Res)
+    for f in range(2):
+        bank[(57 + f) * 64 : (58 + f) * 64] = pack_hr_sprite(generate_rain_frame(f))
+
+    # Slots 59..61 (ptr 123..125): Tactical Radar Map Icons (3 frames, Hi-Res)
+    for k in range(3):
+        bank[(59 + k) * 64 : (60 + k) * 64] = pack_hr_sprite(generate_radar_icon(k))
+
     out_bin = os.path.join(GEN_DIR, "sprites_d000.bin")
     with open(out_bin, "wb") as f:
         f.write(bank)
 
     render_preview(mc_helis, rotors, shadows, explosions, os.path.join(EXT_DIR, "sprites_preview.png"))
-    print(f"Generated 4 KB sprite bank at {out_bin} (42 active frames + 22 reserved).")
+    print(f"Generated 4 KB sprite bank at {out_bin} (62 active frames + 2 reserved).")
 
 
 if __name__ == "__main__":

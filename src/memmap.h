@@ -51,6 +51,15 @@
 #define SPR_PTR_ROTOR_BASE  80   // 80..83  : 4 spinning rotor frames (Hi-Res)
 #define SPR_PTR_SHAD_BASE   84   // 84..99  : 16 ground shadow angles (Hi-Res dithered)
 #define SPR_PTR_EXPL_BASE   100  // 100..105: 6 crash explosion frames (MC)
+#define SPR_PTR_CRATE_BASE  106  // 106..107: 2 medical crate beacon frames (MC)
+#define SPR_PTR_SURV_BASE   108  // 108..109: 2 waving survivor frames (MC)
+#define SPR_PTR_WINCH_BASE  110  // 110..112: 3 winch cable extension frames (Hi-Res)
+#define SPR_PTR_JET_BASE    113  // 113..116: 4 low-flying jet directions E/W/N/S (MC)
+#define SPR_PTR_CYC_BASE    117  // 117..120: 4 swirling cyclone funnel frames (MC)
+#define SPR_PTR_RAIN_BASE   121  // 121..122: 2 driving storm rain frames (Hi-Res)
+#define SPR_PTR_RADAR_HELI  123  // 123     : Tactical map helicopter crosshair (Hi-Res)
+#define SPR_PTR_RADAR_CYC   124  // 124     : Tactical map cyclone eye + ring (Hi-Res)
+#define SPR_PTR_RADAR_BASE  125  // 125     : Tactical map Base Island beacon (Hi-Res)
 
 // Surface categories for 3D terrain collision & landing
 #define SURF_SEA        0

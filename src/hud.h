@@ -3,16 +3,19 @@
 
 #include <c64/types.h>
 
-// Initialize the 4-row Hi-Res Cockpit Instrument Panel ($CB20-$CBBF)
+// Initialize the 4-row Hi-Res Cockpit Instrument Panel
 void hud_init(void);
 
 // Draw a smooth 8-step horizontal bar gauge (width chars, val 0..width*8)
 void hud_draw_bar(byte row, byte col, byte width, byte val, byte color);
 
-// Live flight instrument update (Phase 2: ALT, SPD, LIVES, HDG, VIEW, ZONE, STATUS)
-void hud_update_flight(byte south_view, byte island_id,
-                       byte alt, byte ground_alt, byte speed,
-                       byte lives, byte state, byte surface,
-                       const char *hdg_str, byte ctrl_mode);
+// Full live gameplay Cockpit HUD update (ALT, SPD, FUEL, WIND, CRATES, LIVES, TIME, SCORE, STATUS)
+void hud_update_game(byte south_view, byte island_id,
+                     byte alt, byte ground_alt, byte speed,
+                     byte fuel, byte wind_force,
+                     byte crates_got, byte lives,
+                     unsigned int time_sec, unsigned int score10,
+                     byte state, byte surface,
+                     const char *hdg_str, byte flash_bit);
 
 #endif
