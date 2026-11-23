@@ -983,13 +983,29 @@ def main():
     charset_south = charset_north
 
     tile_heights = bytearray(num_tiles)
+    tile_surface = bytearray(num_tiles)
     tile_north = bytearray(num_tiles * 8)
     tile_south = bytearray(num_tiles * 8)
+
+    # Surface types: 0=SEA, 1=HELIPAD, 2=FLAT_LAND, 3=OBSTACLE (cliffs/trees/buildings/spires)
+    cat_to_surf = {
+        "sea": 0,
+        "helipad": 1,
+        "grass_flat": 2,
+        "beach": 2,
+        "apron": 2,
+        "concrete": 2,
+        "cliff_slope": 3,
+        "tree": 3,
+        "building": 3,
+        "spire": 3,
+    }
 
     for idx, oid in enumerate(orig_ids):
         info = tiles[f"0x{oid:02x}"]
         h = info["height"]
         tile_heights[idx] = h
+        tile_surface[idx] = cat_to_surf.get(info["category"], 3)
         for z, s in enumerate(info["north_slices"]):
             tile_north[idx * 8 + z] = map_slice_to_c64_char(s, z, h, oid)
         for z, s in enumerate(info["south_slices"]):
@@ -1010,6 +1026,8 @@ def main():
         f.write(char_colors)
     with open(os.path.join(GEN_DIR, "tile_heights.bin"), "wb") as f:
         f.write(tile_heights)
+    with open(os.path.join(GEN_DIR, "tile_surface.bin"), "wb") as f:
+        f.write(tile_surface)
     with open(os.path.join(GEN_DIR, "tile_north.bin"), "wb") as f:
         f.write(tile_north)
     with open(os.path.join(GEN_DIR, "tile_south.bin"), "wb") as f:

@@ -10,13 +10,15 @@ extern volatile byte r_pf_memptr;    // MEMPTR_A_NORTH / B_NORTH / A_SOUTH / B_S
 extern volatile byte r_pf_bg;        // Playfield background color ($D021)
 extern volatile byte r_pf_mc1;       // Playfield MC1 ($D022)
 extern volatile byte r_pf_mc2;       // Playfield MC2 ($D023)
+extern volatile byte r_spr_enable;   // Hardware sprite enable bitmask for playfield
 extern volatile byte r_border_prof;  // Debug raster-time border bar toggle
 
 // Synchronisation flags set by IRQ chain
 extern volatile byte r_playfield_done; // Set at scanline 200 (safe to blit Color RAM!)
 extern volatile byte r_frame_count;    // Incremented every frame at scanline 218
 
-void raster_init(void);
+void raster_setup_bank3(void);
+void raster_start_irqs(void);
 void raster_commit_playfield(void);
 void raster_wait_playfield_done(void);
 void raster_wait_frame(void);

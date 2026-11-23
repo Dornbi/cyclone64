@@ -19,10 +19,16 @@ void world_render_row(byte *dst, int cam_tx, int cam_ty, byte sy, byte south_vie
 // Fast 3D projection of an entire 19-cell screen column (sx: 0..39) into dst (stride 40)
 void world_render_col(byte *dst, int cam_tx, int cam_ty, byte sx, byte south_view);
 
+// Exact terrain tile, elevation altitude (0..56 px), and surface type at world tile (wx, wy)
+byte world_get_tile_at(int wx, int wy);
+byte world_get_ground_alt(int wx, int wy);
+byte world_get_surface_type(int wx, int wy);
+
 // Per-char color lookup (0..15 for Color RAM)
 extern const byte CHAR_COLORS[256];
 
-// Tile height lookup (1..8) for dense tile IDs 0..129
+// Tile height (1..8) and surface type (SURF_*) lookups for dense tile IDs 0..129
 extern const byte TILE_HEIGHTS[NUM_DENSE_TILES];
+extern const byte TILE_SURFACE[NUM_DENSE_TILES];
 
 #endif

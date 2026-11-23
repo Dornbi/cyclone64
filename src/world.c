@@ -1,5 +1,6 @@
 #include "memmap.h"
 #include "world.h"
+#include <c64/memmap.h>
 #include <oscar.h>
 #include <string.h>
 
@@ -23,6 +24,10 @@ const byte TILE_HEIGHTS[NUM_DENSE_TILES] = {
     #embed "../generated/tile_heights.bin"
 };
 
+const byte TILE_SURFACE[NUM_DENSE_TILES] = {
+    #embed "../generated/tile_surface.bin"
+};
+
 static const byte TILE_NORTH[NUM_DENSE_TILES * 8] = {
     #embed "../generated/tile_north.bin"
 };
@@ -41,6 +46,10 @@ static const byte CHARSET_SOUTH_LZO[] = {
 
 static const byte CHARSET_HUD_LZO[] = {
     #embed lzo "../generated/hud_charset.bin"
+};
+
+static const byte SPRITES_D000_LZO[] = {
+    #embed lzo "../generated/sprites_d000.bin"
 };
 
 #pragma data(data)
@@ -69,9 +78,51 @@ static byte active_isl_count = 0;
 static byte active_isl[4];
 
 void world_unpack_assets(void) {
-    oscar_expand_lzo((char *)CHARSET_NORTH, (const char *)CHARSET_NORTH_LZO);
-    oscar_expand_lzo((char *)CHARSET_SOUTH, (const char *)CHARSET_SOUTH_LZO);
-    oscar_expand_lzo((char *)CHARSET_HUD,   (const char *)CHARSET_HUD_LZO);
+    // Must be called BEFORE raster IRQs start (while interrupts are disabled!).
+    // Temporarily switch to MMAP_RAM ($01=$30) to unpack all charsets ($E000-$F7FF)
+    // AND static hardware sprites directly into VIC Bank 3 RAM under I/O ($D000-$DFFF)!
+    byte old_map = mmap_set(MMAP_RAM);
+    oscar_expand_lzo((char *)CHARSET_NORTH,   (const char *)CHARSET_NORTH_LZO);
+    oscar_expand_lzo((char *)CHARSET_SOUTH,   (const char *)CHARSET_SOUTH_LZO);
+    oscar_expand_lzo((char *)CHARSET_HUD,     (const char *)CHARSET_HUD_LZO);
+    oscar_expand_lzo((char *)SPRITE_RAM_D000, (const char *)SPRITES_D000_LZO);
+    mmap_set(old_map);
+}
+
+static byte last_query_isl = 5;
+
+byte world_get_tile_at(int wx, int wy) {
+    const IslandDesc *isl = &ISLANDS[last_query_isl];
+    int dx = wx - isl->world_x;
+    if ((unsigned int)dx < (unsigned int)isl->width) {
+        int dy = wy - isl->world_y;
+        if ((unsigned int)dy < (unsigned int)isl->height) {
+            return ATLAS_DENSE[ATLAS_ROW_OFF[isl->atlas_y + (byte)dy] + isl->atlas_x + (byte)dx];
+        }
+    }
+    for (byte i = 0; i < NUM_ISLANDS; i++) {
+        isl = &ISLANDS[i];
+        dx = wx - isl->world_x;
+        if ((unsigned int)dx < (unsigned int)isl->width) {
+            int dy = wy - isl->world_y;
+            if ((unsigned int)dy < (unsigned int)isl->height) {
+                last_query_isl = i;
+                return ATLAS_DENSE[ATLAS_ROW_OFF[isl->atlas_y + (byte)dy] + isl->atlas_x + (byte)dx];
+            }
+        }
+    }
+    return 0;
+}
+
+byte world_get_ground_alt(int wx, int wy) {
+    byte dt = world_get_tile_at(wx, wy);
+    if (dt == 0) return 0;
+    return (byte)((TILE_HEIGHTS[dt] - 1) << 3);
+}
+
+byte world_get_surface_type(int wx, int wy) {
+    byte dt = world_get_tile_at(wx, wy);
+    return TILE_SURFACE[dt];
 }
 
 byte world_find_island(int wx, int wy) {
