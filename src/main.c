@@ -7,6 +7,7 @@
 #include "cyclone.h"
 #include "radar_map.h"
 #include "hud.h"
+#include "audio.h"
 
 #include <c64/vic.h>
 #include <c64/joystick.h>
@@ -35,18 +36,22 @@ int main(void) {
     // 1. Setup Bank 3 & disable CIA interrupts (safe for MMAP_RAM sprite unpacking!)
     raster_setup_bank3();
 
-    // 2. Unpack LZO charsets ($E000-$F7FF) AND 4 KB sprite bank ($D000-$DFFF under I/O!)
+    // 2. Unpack LZO charsets ($E000/$F000) AND 4 KB sprite bank ($D000-$DFFF under I/O!)
     world_unpack_assets();
 
-    // 3. Start the 5-stage Playfield <-> Cockpit HUD raster IRQ chain
+    // 3. Detect SID 6581/8580 & initialize 3-voice filtered SID audio engine
+    audio_init(is_ntsc);
+
+    // 4. Start the 5-stage Playfield <-> Cockpit HUD raster IRQ chain
     raster_start_irqs();
 
-    // 4. Initialize HUD, Rescue Mission, Cyclone Storm & Helicopter on Base Island pad
+    // 5. Initialize HUD, Rescue Mission, Cyclone Storm & Helicopter on Base Island pad
     byte mission_seed = 1;
     hud_init();
     entities_init(mission_seed);
     cyclone_init(mission_seed);
     heli_init();
+    audio_set_mode(AUDIO_MODE_GAME);
 
     byte prev_fire     = 0;
     byte fire_frames   = 0;
@@ -54,7 +59,16 @@ int main(void) {
     byte prev_v        = 0;
     byte prev_c        = 0;
     byte prev_m        = 0;
+    byte prev_f7       = 0;
     byte hud_tick      = 0;
+
+#ifdef PHASE5_TITLE_AUDIO_TEST
+    audio_set_mode(AUDIO_MODE_TITLE);
+    for (;;) {
+        raster_wait_frame();
+        audio_tick_title();
+    }
+#endif
 
 #ifdef PHASE4_RADAR_TEST
     radar_map_show(is_ntsc);
@@ -87,6 +101,13 @@ int main(void) {
         byte v_now    = (key_pressed(KSCAN_V) || key_pressed(KSCAN_RETURN)) ? 1 : 0;
         byte c_now    = key_pressed(KSCAN_C) ? 1 : 0;
         byte m_now    = (key_pressed(KSCAN_M) || key_pressed(KSCAN_SPACE)) ? 1 : 0;
+        byte f7_now   = key_pressed(KSCAN_F7) ? 1 : 0;
+
+        if (f7_now && !prev_f7) {
+            audio_muted ^= 1;
+            entities_set_banner(audio_muted ? "AUDIO: MUTED  " : "AUDIO: ON     ", VCOL_CYAN, 45);
+        }
+        prev_f7 = f7_now;
 
         // Restart cleanly on Fire or Space after Mission Complete / Game Over
         if (game_state != GAME_PLAYING) {
@@ -96,10 +117,13 @@ int main(void) {
                 entities_init(mission_seed);
                 cyclone_init(mission_seed);
                 heli_init();
+                audio_set_mode(AUDIO_MODE_GAME);
             }
             prev_fire = fire_now;
             prev_m    = m_now;
             raster_wait_frame();
+            audio_tick_game(heli_state, 0, 2, last_sfx_event);
+            last_sfx_event = EVT_NONE;
             hud_tick++;
             if ((hud_tick & 7) == 0) {
                 hud_update_game(sc_south_view, world_find_island(heli_px >> 3, heli_py >> 3),
@@ -172,6 +196,10 @@ int main(void) {
         smask |= entities_update_and_draw(sc_south_view, is_ntsc);
         smask |= cyclone_update_and_draw(sc_south_view, (cur_isl == 0xff) ? 1 : 0);
         r_spr_enable = smask;
+
+        // Step 3-voice filtered SID audio (Rotor V1 + Storm/Thunder V2 + Priority SFX V3)
+        audio_tick_game(heli_state, heli_speed, cyc_wind_force, last_sfx_event);
+        last_sfx_event = EVT_NONE;
 
         prev_fire = fire_now;
         prev_v    = v_now;

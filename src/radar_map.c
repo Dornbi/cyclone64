@@ -6,6 +6,7 @@
 #include "entities.h"
 #include "cyclone.h"
 #include "hud.h"
+#include "audio.h"
 #include "radar_map.h"
 
 #include <c64/vic.h>
@@ -134,6 +135,7 @@ static void draw_radar_background(void) {
 void radar_map_show(byte is_ntsc) {
     // 1. Pause playfield split & switch cleanly to full-screen 40x25 Hi-Res Radar ($C800 + $F000)
     raster_pause_split();
+    audio_set_mode(AUDIO_MODE_RADAR);
     draw_radar_background();
 
     // Configure Radar hardware sprites on SCREEN_HUD sprite pointers ($CBF8-$CBFF)
@@ -162,8 +164,9 @@ void radar_map_show(byte is_ntsc) {
         vic_waitFrame();
         tick++;
 
-        // Keep Cyclone moving and mission timer ticking live on radar!
+        // Keep Cyclone moving, mission timer ticking, and Radar Sonar pinging live!
         cyclone_tick_ai();
+        audio_tick_radar(cyc_wind_force);
         sec_cnt++;
         if (sec_cnt >= fps) {
             sec_cnt = 0;
@@ -208,6 +211,7 @@ void radar_map_show(byte is_ntsc) {
     vic.spr_color[2] = VCOL_DARK_GREY;
 
     hud_init();
+    audio_set_mode(AUDIO_MODE_GAME);
     raster_resume_split();
     scroller_redraw_full();
 }
