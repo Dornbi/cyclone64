@@ -9,28 +9,33 @@
 // $0801 - $09FF : startup (Oscar64 boot & init)
 // $0A00 - $4FFF : main (Engine code, data, bss, stack)
 // $5000 - $9AFF : worldmap (19,200-byte packed 14-island dense tile atlas)
-// $9B00 - $BFFF : tables (3D slice LUTs, LZO-compressed charsets & sprites)
+// $9B00 - $BFFF : tables (3D slice LUTs + upper code/data for HUD, Cyclone, Radar, Audio, Title)
 //
 // VIC-II Bank 3 ($C000 - $FFFF):
-// $C000 - $C3FF : Playfield Screen Buffer A (+ sprite ptrs $C3F8-$C3FF)
-// $C400 - $C7FF : Playfield Screen Buffer B (+ sprite ptrs $C7F8-$C7FF)
-// $C800 - $CBFF : Cockpit HUD & Tactical Map Screen RAM
-// $CC00 - $CFFF : Dynamic Sprite Slots (16 sprites)
+// $C000 - $CFFF : Boot-only LZO payload (unpacked at boot -> $D000/$E000/$F000), then:
+//   $C000 - $C3FF : Playfield Screen Buffer A (+ sprite ptrs $C3F8-$C3FF)
+//   $C400 - $C7FF : Playfield Screen Buffer B (+ sprite ptrs $C7F8-$C7FF)
+//   $C800 - $CBFF : Cockpit HUD, Tactical Map & Title Screen RAM
+//   $CC00 - $CFFF : Free scratch / dynamic sprite slots
 // $D000 - $DFFF : I/O (CPU) / 64 Static Sprite Frames (VIC-II RAM under I/O)
-// $E000 - $E7FF : Playfield Tropical Multicolor Charset (North View)
-// $E800 - $EFFF : Playfield Tropical Multicolor Charset (South View)
-// $F000 - $F7FF : Hi-Res Cockpit HUD & Tactical Map Charset
-// $F800 - $FFFF : Extra Sprite Frames + Hardware IRQ/NMI Vectors
+// $E000 - $E7FF : Playfield Tropical Multicolor Charset (shared North & South)
+// $E800 - $EFFF : Reserved / Free RAM
+// $F000 - $F7FF : Hi-Res Cockpit HUD, Tactical Map & Title Charset
+// $F800 - $FFFF : Reserved + Hardware IRQ/NMI Vectors
 
 #pragma stacksize(512)
 #pragma heapsize(0)
 
 #pragma section(worldmap_sec, 0)
 #pragma section(tables_sec, 0)
+#pragma section(code_hi, 0)
+#pragma section(data_hi, 0)
+#pragma section(boot_lzo_sec, 0)
 
 #pragma region(main, 0x0a00, 0x5000, , , {code, data, bss, stack})
 #pragma region(worldmap, 0x5000, 0x9b00, , , {worldmap_sec})
-#pragma region(tables, 0x9b00, 0xc000, , , {tables_sec})
+#pragma region(tables, 0x9b00, 0xc000, , , {tables_sec, code_hi, data_hi})
+#pragma region(boot_lzo, 0xc000, 0xd000, , , {boot_lzo_sec})
 
 // VIC-II Bank 3 pointers
 #define SCREEN_A        ((byte *)0xc000)
@@ -71,8 +76,8 @@
 // Screen bits 7..4 = (addr - $C000) / $0400; Char bits 3..1 = (addr - $C000) / $0800
 #define MEMPTR_A_NORTH  0x08  // Screen $C000 + Charset $E000
 #define MEMPTR_B_NORTH  0x18  // Screen $C400 + Charset $E000
-#define MEMPTR_A_SOUTH  0x0a  // Screen $C000 + Charset $E800
-#define MEMPTR_B_SOUTH  0x1a  // Screen $C400 + Charset $E800
+#define MEMPTR_A_SOUTH  0x08  // Screen $C000 + Charset $E000 (shared tropical charset)
+#define MEMPTR_B_SOUTH  0x18  // Screen $C400 + Charset $E000
 #define MEMPTR_HUD      0x2c  // Screen $C800 + Charset $F000
 
 // HUD occupies bottom 4 character rows (rows 20..23 starting at exact FLD VCBASE=800 -> +800)

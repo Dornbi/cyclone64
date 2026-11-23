@@ -19,6 +19,8 @@ extern volatile byte r_frame_count;    // Incremented every frame at scanline 21
 
 void raster_setup_bank3(void);
 void raster_start_irqs(void);
+void raster_pause_split(void);
+void raster_resume_split(void);
 void raster_commit_playfield(void);
 void raster_wait_playfield_done(void);
 void raster_wait_frame(void);

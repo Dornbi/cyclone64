@@ -6,6 +6,9 @@
 #include <c64/vic.h>
 #include <string.h>
 
+#pragma code(code_hi)
+#pragma data(data_hi)
+
 #define HUD_CHAR_BAR0   64
 #define HUD_CHAR_CRATE  73
 #define HUD_CHAR_EMPTY  74
@@ -231,3 +234,6 @@ void hud_update_game(byte south_view, byte island_id,
     }
     hud_puts(3, 13, msg, mcol);
 }
+
+#pragma code(code)
+#pragma data(data)

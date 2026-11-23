@@ -134,6 +134,36 @@ void raster_start_irqs(void) {
     rirq_start();
 }
 
+void raster_pause_split(void) {
+    rirq_stop();
+    vic.spr_enable = 0x00;
+    vic.ctrl1      = 0x1b;        // Standard 25-row Hi-Res text
+    vic.ctrl2      = 0x08;        // 40-col Hi-Res
+    vic.memptr     = MEMPTR_HUD;  // Screen $C800 + Charset $F000
+    vic.color_border = VCOL_BLACK;
+    vic.color_back   = VCOL_BLUE;
+}
+
+void raster_resume_split(void) {
+    vic.spr_enable = 0x00;
+    last_fld_ys = 0xff;
+    byte ys = r_pf_yscroll & 7;
+    rirq_data(&irq_top.c, 0, (byte)(0x10 | ys));
+    rirq_data(&irq_top.c, 1, (byte)(0x10 | (r_pf_xscroll & 7)));
+    rirq_data(&irq_top.c, 2, r_pf_memptr);
+    rirq_data(&irq_top.c, 3, r_pf_bg);
+    rirq_data(&irq_top.c, 4, r_pf_mc1);
+    rirq_data(&irq_top.c, 5, r_pf_mc2);
+    rirq_data(&irq_top.c, 6, r_spr_enable);
+    rirq_data(&irq_bezel1, 0, (byte)(0x70 | ys));
+    rirq_data(&irq_bezel2, 0, FLD_V2[ys]);
+    rirq_move(2, FLD_L2[ys]);
+    rirq_move(3, FLD_L3[ys]);
+    last_fld_ys = ys;
+    rirq_sort();
+    rirq_start();
+}
+
 void raster_wait_playfield_done(void) {
     r_playfield_done = 0;
     while (!r_playfield_done) {

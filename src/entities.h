@@ -25,6 +25,8 @@
 #define EVT_CRASH       6
 #define EVT_WIN         7
 #define EVT_GAME_OVER   8
+#define EVT_AIRCRAFT    9
+#define EVT_THUNDER     10
 
 typedef struct RescueEntity {
     int  px;

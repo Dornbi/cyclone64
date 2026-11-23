@@ -36,12 +36,10 @@ static const byte TILE_SOUTH[NUM_DENSE_TILES * 8] = {
     #embed "../generated/tile_south.bin"
 };
 
+// Boot-only LZO payloads staged in $C000-$CFFF (reclaimed as Screen A/B/HUD right after unpack!)
+#pragma data(boot_lzo_sec)
 static const byte CHARSET_NORTH_LZO[] = {
     #embed lzo "../generated/charset_north.bin"
-};
-
-static const byte CHARSET_SOUTH_LZO[] = {
-    #embed lzo "../generated/charset_south.bin"
 };
 
 static const byte CHARSET_HUD_LZO[] = {
@@ -79,11 +77,10 @@ static byte active_isl[4];
 
 void world_unpack_assets(void) {
     // Must be called BEFORE raster IRQs start (while interrupts are disabled!).
-    // Temporarily switch to MMAP_RAM ($01=$30) to unpack all charsets ($E000-$F7FF)
+    // Temporarily switch to MMAP_RAM ($01=$30) to unpack charsets ($E000/$F000)
     // AND static hardware sprites directly into VIC Bank 3 RAM under I/O ($D000-$DFFF)!
     byte old_map = mmap_set(MMAP_RAM);
     oscar_expand_lzo((char *)CHARSET_NORTH,   (const char *)CHARSET_NORTH_LZO);
-    oscar_expand_lzo((char *)CHARSET_SOUTH,   (const char *)CHARSET_SOUTH_LZO);
     oscar_expand_lzo((char *)CHARSET_HUD,     (const char *)CHARSET_HUD_LZO);
     oscar_expand_lzo((char *)SPRITE_RAM_D000, (const char *)SPRITES_D000_LZO);
     mmap_set(old_map);

@@ -310,8 +310,8 @@ void scroller_animate_water(void) {
     water_tick++;
     if ((water_tick & 7) != 0) return;
 
-    // Gently shift ocean glint pixels 1px right in chars 0..3 of active charset
-    byte *cs = sc_south_view ? CHARSET_SOUTH : CHARSET_NORTH;
+    // Gently shift ocean glint pixels 1px right in chars 0..3 of shared tropical charset
+    byte *cs = CHARSET_NORTH;
     for (byte i = 0; i < 32; i++) {
         byte b = cs[i];
         if (b) {
