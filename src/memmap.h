@@ -32,10 +32,11 @@
 #pragma section(data_hi, 0)
 #pragma section(boot_lzo_sec, 0)
 
-#pragma region(main, 0x0a00, 0x5000, , , {code, data, bss, stack})
+#pragma region(main, 0x0880, 0x5000, , , {code, data, bss})
 #pragma region(worldmap, 0x5000, 0x9b00, , , {worldmap_sec})
-#pragma region(tables, 0x9b00, 0xc000, , , {tables_sec, code_hi, data_hi})
-#pragma region(boot_lzo, 0xc000, 0xd000, , , {boot_lzo_sec})
+#pragma region(tables, 0x9b00, 0xc000, , , {tables_sec, code_hi})
+#pragma region(boot_lzo, 0xc000, 0xcc00, , , {boot_lzo_sec})
+#pragma region(hi_cc, 0xcc00, 0xd000, , , {data_hi, stack})
 
 // VIC-II Bank 3 pointers
 #define SCREEN_A        ((byte *)0xc000)

@@ -1,0 +1,249 @@
+#include "memmap.h"
+#include "raster.h"
+#include "helicopter.h"
+#include "audio.h"
+#include "title.h"
+
+#include <c64/vic.h>
+#include <c64/joystick.h>
+#include <c64/keyboard.h>
+#include <string.h>
+
+// Keep Title code in upper RAM ($9B00-$BFFF) and static strings in main data ($0880-$4FFF)
+#pragma code(code_hi)
+
+unsigned int title_high_score10 = 0;
+
+void title_record_score(unsigned int score10) {
+    if (score10 > title_high_score10) {
+        title_high_score10 = score10;
+    }
+}
+
+static byte t_scr(char ch) {
+    if (ch >= 'A' && ch <= 'Z') return (byte)(ch - 'A' + 1);
+    if (ch >= '0' && ch <= '9') return (byte)ch;
+    if (ch == ':') return 58;
+    if (ch == '-') return 45;
+    if (ch == '/') return 47;
+    if (ch == '.') return 46;
+    if (ch == '[') return 27;
+    if (ch == ']') return 29;
+    if (ch == '!') return 33;
+    if (ch == '>') return 62;
+    if (ch == '<') return 60;
+    if (ch == '#') return 72; // Solid block for big CYCLONE logo
+    return 32;
+}
+
+static void t_puts(byte row, byte col, const char *s, byte color) {
+    unsigned int off = (unsigned int)row * 40 + col;
+    byte *scr  = SCREEN_HUD + off;
+    byte *colr = COLOR_RAM + off;
+    byte i = 0;
+    while (s[i] && (byte)(col + i) < 40) {
+        scr[i]  = t_scr(s[i]);
+        colr[i] = color;
+        i++;
+    }
+}
+
+static void t_put_score(byte row, byte col, unsigned int score10, byte color) {
+    unsigned int off = (unsigned int)row * 40 + col;
+    byte *scr  = SCREEN_HUD + off;
+    byte *colr = COLOR_RAM + off;
+    byte d4 = 0, d3 = 0, d2 = 0, d1 = 0;
+    while (score10 >= 10000) { score10 -= 10000; d4++; }
+    while (score10 >= 1000)  { score10 -= 1000;  d3++; }
+    while (score10 >= 100)   { score10 -= 100;   d2++; }
+    while (score10 >= 10)    { score10 -= 10;    d1++; }
+    scr[0] = (byte)('0' + d4);      colr[0] = color;
+    scr[1] = (byte)('0' + d3);      colr[1] = color;
+    scr[2] = (byte)('0' + d2);      colr[2] = color;
+    scr[3] = (byte)('0' + d1);      colr[3] = color;
+    scr[4] = (byte)('0' + score10); colr[4] = color;
+    scr[5] = '0';                   colr[5] = color;
+}
+
+// Giant 5-row bold pixel-block CYCLONE banner (34 chars wide, centered at col 3)
+static const char * const LOGO_ROWS[5] = {
+    " ###  #   #  ###  #     ###  #  # ####",
+    "#   #  # #  #   # #    #   # ## # #   ",
+    "#       #   #     #    #   # #### ### ",
+    "#   #   #   #   # #    #   # # ## #   ",
+    " ###    #    ###  ####  ###  #  # ####"
+};
+
+static const byte LOGO_COLS[5] = {
+    VCOL_WHITE, VCOL_YELLOW, VCOL_ORANGE, VCOL_LT_RED, VCOL_RED
+};
+
+static void draw_options_status(byte is_ntsc) {
+    t_puts(15, 5, "[C]  CONTROLS :", VCOL_CYAN);
+    t_puts(15, 21, (heli_ctrl_mode == CTRL_CLASSIC) ? "CLASSIC " : "ARCADE  ", VCOL_WHITE);
+
+    t_puts(16, 5, "[F7] AUDIO    :", VCOL_CYAN);
+    if (audio_muted) {
+        t_puts(16, 21, "MUTED     ", VCOL_LT_RED);
+    } else {
+        t_puts(16, 21, audio_is_8580 ? "SID 8580  " : "SID 6581  ", VCOL_LT_GREEN);
+    }
+
+    t_puts(17, 5, "     SYSTEM   :", VCOL_CYAN);
+    t_puts(17, 21, is_ntsc ? "NTSC 60HZ" : "PAL 50HZ ", VCOL_YELLOW);
+
+    t_puts(18, 5, "     HI-SCORE :", VCOL_CYAN);
+    t_put_score(18, 21, title_high_score10, VCOL_YELLOW);
+}
+
+static void draw_title_screen(byte is_ntsc) {
+    memset(SCREEN_HUD, 32, 1000);
+    memset(COLOR_RAM, VCOL_CYAN, 1000);
+
+    // Top & bottom storm horizon dividers
+    for (byte x = 0; x < 40; x++) {
+        SCREEN_HUD[0 * 40 + x]  = 76; COLOR_RAM[0 * 40 + x]  = VCOL_CYAN;
+        SCREEN_HUD[12 * 40 + x] = 76; COLOR_RAM[12 * 40 + x] = VCOL_LT_BLUE;
+        SCREEN_HUD[24 * 40 + x] = 76; COLOR_RAM[24 * 40 + x] = VCOL_CYAN;
+    }
+
+    // 5-row sunset-gradient CYCLONE block logo (rows 1..5)
+    for (byte r = 0; r < 5; r++) {
+        t_puts((byte)(1 + r), 1, LOGO_ROWS[r], LOGO_COLS[r]);
+    }
+
+    // Edition & Vortex homage subtitle (row 7 — cleanly above animated sky!)
+    t_puts(7,  3, "COMMODORE 64 EDITION - VORTEX 1985", VCOL_LT_GREY);
+
+    // Tropical island silhouette & wave crests along row 11 (above divider)
+    for (byte x = 2; x < 12; x++) {
+        SCREEN_HUD[11 * 40 + x] = 72;
+        COLOR_RAM[11 * 40 + x]  = VCOL_LT_GREEN;
+    }
+    SCREEN_HUD[11 * 40 + 6] = 1 + ('H' - 'A');
+    COLOR_RAM[11 * 40 + 6]  = VCOL_YELLOW;
+
+    // Mission brief
+    t_puts(13, 2, "RESCUE 5 MEDICAL CRATES BEFORE STORM!", VCOL_YELLOW);
+
+    // Interactive Options & Hardware readout (rows 15..18)
+    draw_options_status(is_ntsc);
+
+    // Controls quick reference (rows 20..21)
+    t_puts(20, 1, "JOY2/WASD:FLY  FIRE:ALT/VIEW  M:RADAR", VCOL_LT_GREY);
+    t_puts(21, 3, "Q/Z:ALT  V:VIEW  1-7:ISLAND WARP", VCOL_LT_GREY);
+
+    // Launch prompt (row 23)
+    t_puts(23, 4, "PRESS FIRE OR SPACE TO LAUNCH!", VCOL_WHITE);
+}
+
+void title_screen_show(byte is_ntsc) {
+    raster_pause_split();
+    vic.color_border = VCOL_BLACK;
+    vic.color_back   = VCOL_BLUE;
+
+    draw_title_screen(is_ntsc);
+    audio_set_mode(AUDIO_MODE_TITLE);
+
+    // Configure animated Title Screen Hardware Sprites on SCREEN_HUD pointers ($CBF8-$CBFF):
+    //   0 = Rescue Helicopter (MC)
+    //   1 = Spinning Rotor Overlay (Hi-Res)
+    //   2 = 2x Swirling Red Cyclone Funnel (MC)
+    //   3 = Pulsing Medical Crate Beacon (MC)
+    byte *ptrs = SCREEN_HUD + 0x03f8;
+    ptrs[0] = (byte)(SPR_PTR_HELI_BASE + 4);
+    ptrs[1] = SPR_PTR_ROTOR_BASE;
+    ptrs[2] = SPR_PTR_CYC_BASE;
+    ptrs[3] = SPR_PTR_CRATE_BASE;
+
+    vic.spr_mcolor0  = VCOL_WHITE;
+    vic.spr_mcolor1  = VCOL_BLACK;
+    vic.spr_multi    = 0x0d; // Sprites 0, 2, 3 multicolor; 1 hi-res rotor
+    vic.spr_expand_x = 0x04; // 2x expanded Cyclone funnel on Sprite 2!
+    vic.spr_expand_y = 0x04;
+    vic.spr_color[0] = VCOL_LT_RED;
+    vic.spr_color[1] = VCOL_BLACK;
+    vic.spr_color[2] = VCOL_RED;
+    vic.spr_color[3] = VCOL_YELLOW;
+
+    int  hx   = 64;
+    sbyte hdx = 1;
+    byte tick = 0;
+    byte wait_rel = 1;
+    byte prev_c   = 0;
+    byte prev_f7  = 0;
+
+    for (;;) {
+        vic_waitFrame();
+        tick++;
+        audio_tick_title();
+
+        // Patrol helicopter smoothly across tropical sky above the island silhouette!
+        hx += hdx;
+        if (hx > 215) hdx = -1;
+        if (hx < 48)  hdx =  1;
+        int hy = 122 + (int)((tick & 16) ? 1 : 0);
+
+        ptrs[0] = (byte)(SPR_PTR_HELI_BASE + ((hdx > 0) ? 4 : 12));
+        ptrs[1] = (byte)(SPR_PTR_ROTOR_BASE + ((tick >> 1) & 3));
+        ptrs[2] = (byte)(SPR_PTR_CYC_BASE + ((tick >> 2) & 3));
+        ptrs[3] = (byte)(SPR_PTR_CRATE_BASE + ((tick >> 4) & 1));
+
+        vic_sprxy(0, hx, hy);
+        vic_sprxy(1, hx, hy - 2);
+        vic_sprxy(2, 266 + (int)((tick & 31) < 16 ? (tick & 15) >> 2 : (15 - (tick & 15)) >> 2), 111);
+        vic_sprxy(3, 66, 134);
+        vic.spr_enable = 0x0f;
+
+        // Pulse launch prompt color smoothly
+        byte pcol = ((tick >> 4) & 1) ? VCOL_YELLOW : VCOL_WHITE;
+        for (byte i = 4; i < 34; i++) {
+            COLOR_RAM[23 * 40 + i] = pcol;
+        }
+
+        // Poll Joystick Port 2 & Keyboard for Options + Launch
+        joy_poll(1);
+        keyb_poll();
+
+        byte c_now  = key_pressed(KSCAN_C) ? 1 : 0;
+        byte f7_now = key_pressed(KSCAN_F7) ? 1 : 0;
+        byte go_now = (joyb[1] || key_pressed(KSCAN_SPACE) || key_pressed(KSCAN_RETURN)) ? 1 : 0;
+
+        if (c_now && !prev_c) {
+            heli_ctrl_mode ^= 1;
+            draw_options_status(is_ntsc);
+        }
+        if (f7_now && !prev_f7) {
+            audio_muted ^= 1;
+            draw_options_status(is_ntsc);
+        }
+        prev_c  = c_now;
+        prev_f7 = f7_now;
+
+        if (wait_rel) {
+            if (!go_now) wait_rel = 0;
+        } else if (go_now) {
+            break;
+        }
+    }
+
+    // Brief debounce & restore clean VIC sprite config for live 3D playfield
+    for (byte d = 0; d < 8; d++) {
+        vic_waitFrame();
+        audio_tick_title();
+    }
+
+    vic.spr_enable   = 0x00;
+    vic.spr_expand_x = 0x00;
+    vic.spr_expand_y = 0x00;
+    vic.spr_multi    = 0x01;
+    vic.spr_mcolor0  = VCOL_WHITE;
+    vic.spr_mcolor1  = VCOL_BLACK;
+    vic.spr_color[0] = VCOL_LT_RED;
+    vic.spr_color[1] = VCOL_BLACK;
+    vic.spr_color[2] = VCOL_DARK_GREY;
+
+    raster_resume_split();
+}
+
+#pragma code(code)

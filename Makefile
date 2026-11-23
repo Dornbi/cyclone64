@@ -13,8 +13,8 @@ D64 = $(BUILD_DIR)/cyclone.d64
 
 OSCAR_FLAGS = -ii="$(OSCAR64_INC)" -O2 -Oo -tm=c64 -n -xz
 
-SRCS = src/main.c src/world.c src/raster.c src/scroller.c src/helicopter.c src/entities.c src/cyclone.c src/radar_map.c src/hud.c src/audio.c
-HDRS = src/memmap.h src/world.h src/raster.h src/scroller.h src/helicopter.h src/entities.h src/cyclone.h src/radar_map.h src/hud.h src/audio.h generated/islands_data.h
+SRCS = src/main.c src/world.c src/raster.c src/scroller.c src/helicopter.c src/entities.c src/cyclone.c src/radar_map.c src/hud.c src/audio.c src/title.c
+HDRS = src/memmap.h src/world.h src/raster.h src/scroller.h src/helicopter.h src/entities.h src/cyclone.h src/radar_map.h src/hud.h src/audio.h src/title.h generated/islands_data.h
 
 .PHONY: all extract assets clean run run-ntsc disk screenshot
 
@@ -44,8 +44,12 @@ run-ntsc: $(PRG)
 	$(X64SC) -ntsc -autostartprgmode 1 -autostart $(PRG)
 
 screenshot: $(PRG)
-	$(X64SC) -pal -warp -sounddev dummy -autostartprgmode 1 -limitcycles 6000000 -exitscreenshot $(BUILD_DIR)/screenshot_pal.png -autostart $(PRG) || true
-	$(X64SC) -ntsc -warp -sounddev dummy -autostartprgmode 1 -limitcycles 6000000 -exitscreenshot $(BUILD_DIR)/screenshot_ntsc.png -autostart $(PRG) || true
+	$(X64SC) -pal -sidmodel 1 -warp -sounddev dummy -autostartprgmode 1 -limitcycles 4500000 -exitscreenshot $(BUILD_DIR)/screenshot_title_pal.png -autostart $(PRG) || true
+	$(X64SC) -ntsc -sidmodel 0 -warp -sounddev dummy -autostartprgmode 1 -limitcycles 4500000 -exitscreenshot $(BUILD_DIR)/screenshot_title_ntsc.png -autostart $(PRG) || true
+	$(OSCAR64) $(OSCAR_FLAGS) -DSKIP_TITLE -o=$(BUILD_DIR)/cyclone_game.prg $(SRCS)
+	$(X64SC) -pal -warp -sounddev dummy -autostartprgmode 1 -limitcycles 5000000 -exitscreenshot $(BUILD_DIR)/screenshot_pal.png -autostart $(BUILD_DIR)/cyclone_game.prg || true
+	$(X64SC) -ntsc -warp -sounddev dummy -autostartprgmode 1 -limitcycles 5000000 -exitscreenshot $(BUILD_DIR)/screenshot_ntsc.png -autostart $(BUILD_DIR)/cyclone_game.prg || true
+	rm -f $(BUILD_DIR)/cyclone_game.*
 
 clean:
 	rm -rf $(BUILD_DIR)

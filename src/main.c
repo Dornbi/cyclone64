@@ -8,6 +8,7 @@
 #include "radar_map.h"
 #include "hud.h"
 #include "audio.h"
+#include "title.h"
 
 #include <c64/vic.h>
 #include <c64/joystick.h>
@@ -45,8 +46,13 @@ int main(void) {
     // 4. Start the 5-stage Playfield <-> Cockpit HUD raster IRQ chain
     raster_start_irqs();
 
-    // 5. Initialize HUD, Rescue Mission, Cyclone Storm & Helicopter on Base Island pad
     byte mission_seed = 1;
+
+#ifndef SKIP_TITLE
+    title_screen_show(is_ntsc);
+#endif
+
+    // 5. Initialize HUD, Rescue Mission, Cyclone Storm & Helicopter on Base Island pad
     hud_init();
     entities_init(mission_seed);
     cyclone_init(mission_seed);
@@ -55,27 +61,18 @@ int main(void) {
 
     byte prev_fire     = 0;
     byte fire_frames   = 0;
-    byte fire_used_alt = 0;
+    byte fire_used_alt = 1;
     byte prev_v        = 0;
     byte prev_c        = 0;
-    byte prev_m        = 0;
+    byte prev_m        = 1;
     byte prev_f7       = 0;
     byte hud_tick      = 0;
-
-#ifdef PHASE5_TITLE_AUDIO_TEST
-    audio_set_mode(AUDIO_MODE_TITLE);
-    for (;;) {
-        raster_wait_frame();
-        audio_tick_title();
-    }
-#endif
 
 #ifdef PHASE4_RADAR_TEST
     radar_map_show(is_ntsc);
 #endif
 
 #ifdef PHASE4_STORM_TEST
-    // Place Cyclone right beside Base Island to verify funnel, dark tempest palette, rain & wind gauge!
     cyc_px = heli_px + 64;
     cyc_py = heli_py - 16;
     heli_alt = 28;
@@ -109,15 +106,23 @@ int main(void) {
         }
         prev_f7 = f7_now;
 
-        // Restart cleanly on Fire or Space after Mission Complete / Game Over
+        // Record high score & handle Mission Complete / Game Over restart or return to Title
         if (game_state != GAME_PLAYING) {
-            if ((fire_now && !prev_fire) || (m_now && !prev_m)) {
+            title_record_score(game_score10);
+            byte to_title = (key_pressed(KSCAN_T) || key_pressed(KSCAN_STOP)) ? 1 : 0;
+            if (to_title || (fire_now && !prev_fire) || (m_now && !prev_m)) {
                 mission_seed++;
+                if (to_title) {
+                    title_screen_show(is_ntsc);
+                }
                 hud_init();
                 entities_init(mission_seed);
                 cyclone_init(mission_seed);
                 heli_init();
                 audio_set_mode(AUDIO_MODE_GAME);
+                prev_fire = 1;
+                prev_m    = 1;
+                continue;
             }
             prev_fire = fire_now;
             prev_m    = m_now;
