@@ -192,6 +192,7 @@ def main():
         ("09_radar_map",          ["-DSKIP_TITLE", "-DTEST_SCENARIO=9"], False, 1, 4500000, "screen"),
         ("10_storm_cyclone",      ["-DSKIP_TITLE", "-DTEST_SCENARIO=10"],False, 1, 5000000, "storm"),
         ("11_winch_pickup",       ["-DSKIP_TITLE", "-DTEST_SCENARIO=11"],False, 1, 7000000, "gameplay"),
+        ("12_kokola_pad_landed",  ["-DSKIP_TITLE", "-DTEST_SCENARIO=12"],False, 1, 7000000, "gameplay"),
     ]
 
     results = []

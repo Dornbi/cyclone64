@@ -118,4 +118,37 @@
                         heli_heading_str(), 0);
     }
     for (;;) { raster_wait_frame(); }
+#elif TEST_SCENARIO == 12
+    // Land on elevated Kokola Island helipad & hold S (descend) for 30 frames:
+    // Verifies helicopter stays locked at heli_ground_alt with shadow directly underneath!
+    heli_warp_to_island(2);
+    // Find Kokola's helipad tile
+    for (int wy = ISLANDS[2].world_y; wy < ISLANDS[2].world_y + (int)ISLANDS[2].height; wy++) {
+        for (int wx = ISLANDS[2].world_x; wx < ISLANDS[2].world_x + (int)ISLANDS[2].width; wx++) {
+            if (world_get_surface_type(wx, wy) == SURF_HELIPAD) {
+                heli_px = wx * 8 + 4;
+                heli_py = wy * 8 + 4;
+                heli_ground_alt = world_get_ground_alt(wx, wy);
+                heli_alt = (byte)(heli_ground_alt + 6);
+                scroller_init(wx, wy);
+                goto kokola_found;
+            }
+        }
+    }
+kokola_found:
+    for (byte tf = 0; tf < 36; tf++) {
+        sbyte cdx = 0, cdy = 0;
+        heli_update(0, 0, 0, -1, sc_south_view, 0, 0, 0, &cdx, &cdy); // Hold descend!
+        scroller_move(cdx, cdy);
+        byte isl = world_find_island(heli_px >> 3, heli_py >> 3);
+        byte sm = heli_sync_sprites(sc_south_view);
+        sm |= entities_update_and_draw(sc_south_view, is_ntsc);
+        sm |= cyclone_update_and_draw(sc_south_view, (isl == 0xff) ? 1 : 0);
+        r_spr_enable = sm;
+        hud_update_game(sc_south_view, isl, heli_alt, heli_ground_alt, heli_speed,
+                        game_fuel, cyc_wind_force, crates_collected, heli_lives,
+                        game_time_s, game_score10, heli_state, heli_surface,
+                        heli_heading_str(), 0);
+    }
+    for (;;) { raster_wait_frame(); }
 #endif

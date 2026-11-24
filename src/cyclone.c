@@ -136,7 +136,7 @@ static void spawn_jet(void) {
     }
 
     last_sfx_event = EVT_AIRCRAFT;
-    entities_set_banner("BEWARE AIRCRAFT", VCOL_YELLOW, 75);
+    entities_set_banner("!BEWARE JET!  ", VCOL_YELLOW, 75);
 }
 
 static byte project_hazard(int px, int py, byte alt, byte south_view, int *ox, int *oy) {

@@ -185,7 +185,11 @@ void heli_update(sbyte joy_dx, sbyte joy_dy, byte fire_held,
             heli_state = HELI_STATE_FLYING;
         }
     } else if (alt_cmd < 0) {
-        if (heli_alt > 0) heli_alt--;
+        if (heli_state == HELI_STATE_LANDED) {
+            heli_alt = heli_ground_alt;
+        } else if (heli_alt > 0) {
+            heli_alt--;
+        }
     }
 
     // 2. Steering, Thrust & Cyclone Wind Drift
@@ -271,6 +275,10 @@ void heli_update(sbyte joy_dx, sbyte joy_dy, byte fire_held,
     int wy = heli_py >> 3;
     heli_ground_alt = world_get_ground_alt(wx, wy);
     heli_surface    = world_get_surface_type(wx, wy);
+
+    if (heli_state == HELI_STATE_LANDED) {
+        heli_alt = heli_ground_alt;
+    }
 
     // 4. 3D Collision & Safe Landing Check
     if (heli_state == HELI_STATE_FLYING) {
