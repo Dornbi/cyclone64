@@ -86,6 +86,10 @@ void world_unpack_assets(void) {
     mmap_set(old_map);
 }
 
+const byte *world_atlas_row(byte atlas_y, byte atlas_x) {
+    return &ATLAS_DENSE[ATLAS_ROW_OFF[atlas_y] + atlas_x];
+}
+
 static byte last_query_isl = 5;
 
 byte world_get_tile_at(int wx, int wy) {

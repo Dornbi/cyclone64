@@ -13,7 +13,7 @@ A native **Commodore 64 (stock 64 KB, PAL & NTSC)** port of the 1985 ZX Spectrum
   - Live Tactical Radar Icons (Helicopter, Cyclone Danger Ring, Base Beacon)
 - **Full Rescue Gameplay Loop**: Recover 5 Medical Crates across outer islands and rescue stranded Survivors before the `08:00` countdown expires, refueling at any of the 7 island helipads and returning safely to Base Island.
 - **Dynamic Cyclone AI & Weather**: Wandering storm front with aerodynamic wind drift, eye downdrafts, darkening tempest palette, lightning flashes, and open-sea aircraft hazards.
-- **Live Tactical Archipelago Radar (`M` / `Space`)**: Full-screen scaled archipelago map showing all 14 islands, helipads, live pulsing Helicopter and Cyclone sprites, and real-time wind/crate telemetry.
+- **Live 320×200 Bitmap Tactical Radar (`M` / `Space`)**: True VIC-II Hi-Res Bitmap Mode (`BMM=1`, `$E000–$FF3F`) rendering all 14 pixel-accurate island coastlines, 7 white helipad crosses, 3×3 sector grid, pulsing Helicopter/Cyclone/Base hardware sprites, and lossless charset restoration on exit.
 - **3-Voice Filtered SID Audio Engine (6581 & 8580 Auto-Calibrated)**:
   - **Voice 1**: Speed-coupled helicopter rotor blade-pass synthesis
   - **Voice 2**: Resonant Band-Pass/Low-Pass Cyclone wind & booming thunder rolls
@@ -39,10 +39,9 @@ A native **Commodore 64 (stock 64 KB, PAL & NTSC)** port of the 1985 ZX Spectrum
 Requires [Oscar64](https://github.com/drmortalwombat/oscar64), Python 3 (with Pillow), and [VICE](https://vice-emu.sourceforge.io/) (`x64sc`, `c1541`).
 
 ```bash
-make all        # Build single-load build/cyclone.prg (49 KB, stock 64 KB C64)
-make disk       # Package bootable build/cyclone.d64 disk image
+make all        # Build single-load build/cyclone.prg (50 KB, stock 64 KB C64)
 make run        # Launch in VICE x64sc (PAL)
 make run-ntsc   # Launch in VICE x64sc (NTSC)
-make test       # Run 11-scenario automated VICE visual & hardware regression suite
+make test       # Run 16-scenario on-target VICE test suite (see docs/testing_plan.md)
 make screenshot # Capture PAL/NTSC Title & Gameplay verification screenshots
 ```

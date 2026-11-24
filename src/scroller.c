@@ -382,3 +382,17 @@ int scroller_center_wx(void) {
 int scroller_center_wy(void) {
     return cur_tile_y + (PF_ROWS / 2);
 }
+
+#ifdef TEST_SCENARIO
+byte scroller_verify_color_ram(void) {
+    const byte *scr = front_screen();
+    for (unsigned int i = 0; i < PF_CELLS; i++) {
+        byte expected = (byte)(CHAR_COLORS[scr[i]] & 0x0f);
+        byte actual   = (byte)(COLOR_RAM[i] & 0x0f);
+        if (actual != expected) {
+            return 0;
+        }
+    }
+    return 1;
+}
+#endif

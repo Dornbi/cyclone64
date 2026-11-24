@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
 """
-Automated VICE x64sc Visual & Hardware Regression Test Suite for Cyclone (C64).
-Builds & captures screenshots across all key game states (Title, Help, Flight,
-Diagonal NW/SW scrolling, PAL & NTSC, South View, Radar, Storm, Winch Pickup),
-runs automated pixel assertions on the raster split bezel, HUD integrity, and
-multicolor terrain fidelity, and outputs a labeled contact sheet PNG.
+Automated On-Target VICE x64sc Visual, Alignment & Playability Test Suite for Cyclone (C64).
+See docs/testing_plan.md for the full 16-scenario specification covering:
+  1. Visual stability & zero unexpected color changes / raster IRQ artifacts
+  2. Graphics & sprite alignment (shadows, waving survivors, medical crates, winch, South view)
+  3. Playability & mission solvability (real C64 fuel range, 120-entity audit, full 5-crate win)
+  4. True 320x200 VIC-II Bitmap Tactical Radar Map & lossless charset restoration
 """
 import os
 import subprocess
@@ -17,7 +18,10 @@ os.makedirs(OUT_DIR, exist_ok=True)
 
 OSCAR64 = "/Users/peter/bin/oscar64"
 OSCAR64_INC = "/Users/peter/Library/CloudStorage/GoogleDrive-dornbach@gmail.com/My Drive/Programozas/c64/oscar64-main-20260818/include"
-X64SC = "/Applications/vice-arm64-gtk3-3.10/bin/x64sc"
+_NOFOCUS_X64SC = os.path.expanduser("~/.local/vice-nofocus/bin/x64sc")
+X64SC = os.environ.get("X64SC") or (
+    _NOFOCUS_X64SC if os.access(_NOFOCUS_X64SC, os.X_OK) else "/Applications/vice-arm64-gtk3-3.10/bin/x64sc"
+)
 
 SRCS = [
     "src/main.c", "src/world.c", "src/raster.c", "src/scroller.c",
@@ -29,7 +33,7 @@ SRCS = [
 def compile_prg(out_prg, extra_flags=None):
     cmd = [
         OSCAR64, f"-ii={OSCAR64_INC}",
-        "-O2", "-Oo", "-tm=c64", "-n", "-xz",
+        "-Os", "-Oo", "-tm=c64", "-n", "-xz",
         f"-o={out_prg}",
     ] + (extra_flags or []) + SRCS
     res = subprocess.run(cmd, cwd=WORKSPACE, capture_output=True, text=True)
@@ -38,7 +42,7 @@ def compile_prg(out_prg, extra_flags=None):
         sys.exit(1)
 
 
-def capture_vice(prg_path, png_path, ntsc=False, sidmodel=1, cycles=5000000):
+def capture_vice(prg_path, png_path, ntsc=False, sidmodel=1, cycles=6000000):
     if os.path.exists(png_path):
         os.remove(png_path)
     cmd = [
@@ -62,23 +66,31 @@ def is_black(rgb):
 
 
 def is_light_green(rgb):
-    # C64 Light Green (bright green channel, relatively bright R/B)
     return rgb[1] > 180 and rgb[1] > rgb[0] + 20 and rgb[1] > rgb[2] + 20
 
 
-def verify_gameplay_frame(png_path, label, expect_land=True):
-    """
-    Verify critical C64 VIC-II hardware invariants on a live gameplay screenshot:
-      1. Pure black raster bezel between playfield and HUD (no blue leak / IRQ desync)
-      2. Pure black HUD background & intact top scanline of HUD row 0 (no FLD clipping)
-      3. Multicolor terrain present (light-green MC1 pixels rendered, not single-color hi-res)
-    """
+def check_border_black(im):
+    """On-target C64 test hooks paint vic.color_border = RED on any assertion failure!"""
+    w, h = im.size
+    px = im.load()
+    bad = 0
+    for x in range(8, w - 8, 8):
+        if not is_black(px[x, 6]):
+            bad += 1
+        if not is_black(px[x, h - 6]):
+            bad += 1
+    return bad
+
+
+def verify_gameplay_frame(png_path, expect_land=True):
     im = Image.open(png_path).convert("RGB")
     w, h = im.size
     px = im.load()
 
-    # Locate top border height dynamically (PAL 384x272 has top screen at y=35; NTSC 384x247 at y=22)
-    # Find first non-black row inside center columns (x=64..320) -> playfield top!
+    border_err = check_border_black(im)
+    if border_err > 0:
+        return False, f"ON-TARGET C64 ASSERTION FAILED (non-black border pixels={border_err})!"
+
     pf_top = None
     for y in range(h):
         non_blk = sum(1 for x in range(64, w - 64) if not is_black(px[x, y]))
@@ -88,8 +100,6 @@ def verify_gameplay_frame(png_path, label, expect_land=True):
     if pf_top is None:
         return False, "Blank screen!"
 
-    # Playfield is 18 rows = 144 scanlines (lines 50..193). Bezel is lines 194..218 (~20px black).
-    # HUD starts 169 scanlines below line 50 -> pf_top + 169..pf_top + 200!
     bezel_y0 = pf_top + 148
     bezel_y1 = pf_top + 164
     bezel_nonblack = 0
@@ -98,7 +108,6 @@ def verify_gameplay_frame(png_path, label, expect_land=True):
             if not is_black(px[x, y]):
                 bezel_nonblack += 1
 
-    # Find HUD top scanline (first non-black scanline after bezel_y0)
     hud_top = None
     for y in range(bezel_y0, h):
         non_blk = sum(1 for x in range(40, w - 40) if not is_black(px[x, y]))
@@ -108,7 +117,6 @@ def verify_gameplay_frame(png_path, label, expect_land=True):
     if hud_top is None:
         return False, "HUD missing!"
 
-    # Check HUD row 0 height & total 4-row HUD span (4 rows x 8px = 31px active span!)
     hud_row0_lines = 0
     for dy in range(8):
         if hud_top + dy < h:
@@ -123,7 +131,6 @@ def verify_gameplay_frame(png_path, label, expect_land=True):
             hud_bot = y
     hud_span = (hud_bot - hud_top) + 1
 
-    # Check HUD background is pure black (sample column 0 blank margin x=33..38!)
     hud_bg_black = 0
     hud_bg_tot = 0
     for y in range(hud_top, min(hud_top + 30, h)):
@@ -132,7 +139,6 @@ def verify_gameplay_frame(png_path, label, expect_land=True):
             if is_black(px[x, y]):
                 hud_bg_black += 1
 
-    # Check multicolor Light Green MC1 presence inside playfield (proves MCM=1 & Color RAM bit3 intact!)
     mc_ltgreen = 0
     for y in range(pf_top, min(pf_top + 140, h)):
         for x in range(48, w - 48):
@@ -141,28 +147,59 @@ def verify_gameplay_frame(png_path, label, expect_land=True):
 
     errs = []
     if bezel_nonblack > 0:
-        errs.append(f"bezel_nonblack={bezel_nonblack} (raster split leak!)")
+        errs.append(f"bezel_nonblack={bezel_nonblack}")
     if hud_row0_lines < 7:
-        errs.append(f"hud_row0_lines={hud_row0_lines} (top of HUD clipped!)")
+        errs.append(f"hud_row0_lines={hud_row0_lines}")
     if hud_span < 30:
-        errs.append(f"hud_span={hud_span}px (expected >=30px for all 4 HUD rows!)")
+        errs.append(f"hud_span={hud_span}px")
     if hud_bg_tot > 0 and hud_bg_black < hud_bg_tot * 0.9:
-        errs.append(f"hud_bg_black={hud_bg_black}/{hud_bg_tot} (HUD bg not black!)")
+        errs.append(f"hud_bg_black={hud_bg_black}/{hud_bg_tot}")
     if expect_land and mc_ltgreen < 500:
-        errs.append(f"mc_ltgreen={mc_ltgreen} (multicolor terrain missing!)")
+        errs.append(f"mc_ltgreen={mc_ltgreen}")
 
-    info = f"bezel_err={bezel_nonblack}, hud_row0={hud_row0_lines}px, hud_span={hud_span}px, mc_ltgreen={mc_ltgreen}"
+    info = f"bezel=0, hud={hud_row0_lines}/{hud_span}px, mc_ltg={mc_ltgreen}"
     return (len(errs) == 0), ("; ".join(errs) if errs else info)
+
+
+def verify_bitmap_radar(png_path):
+    im = Image.open(png_path).convert("RGB")
+    if check_border_black(im) > 0:
+        return False, "Non-black border!"
+    w, h = im.size
+    px = im.load()
+    # Count bright green island pixels inside the 320x200 bitmap viewport
+    ltg = sum(1 for y in range(50, h - 50) for x in range(50, w - 50) if is_light_green(px[x, y]))
+    if ltg < 200:
+        return False, f"Bitmap islands missing (ltg={ltg})"
+    return True, f"320x200 bitmap OK (island_px={ltg})"
+
+
+def verify_color_stability(png_t0, png_t8):
+    """Compare terrain palette stability between t=0s and t=8s (must not shift MedGrey <-> DarkGrey!)."""
+    a = Image.open(png_t0).convert("RGB")
+    b = Image.open(png_t8).convert("RGB")
+    pa, pb = a.load(), b.load()
+    w, h = a.size
+    # Count Med Grey cliff pixels (R≈G≈B in 105..145) across playfield in both frames
+    def count_med_grey(p):
+        return sum(
+            1 for y in range(40, 180) for x in range(48, w - 48)
+            if 100 <= p[x, y][0] <= 150 and abs(p[x, y][0] - p[x, y][1]) < 15 and abs(p[x, y][1] - p[x, y][2]) < 15
+        )
+    mg0, mg8 = count_med_grey(pa), count_med_grey(pb)
+    if mg0 < 400 or abs(mg0 - mg8) > 120:
+        return False, f"MedGrey cliff drift: t0={mg0}, t8s={mg8}"
+    return True, f"MedGrey stable: t0={mg0}, t8s={mg8}"
 
 
 def build_contact_sheet(entries, out_path):
     if not entries:
         return
-    cols = 3
+    cols = 4
     rows = (len(entries) + cols - 1) // cols
-    tw, th = 384, 272
-    pad = 24
-    sheet = Image.new("RGB", (cols * tw + (cols + 1) * 8, rows * (th + pad) + 8), (24, 24, 28))
+    tw, th = 320, 226
+    pad = 22
+    sheet = Image.new("RGB", (cols * tw + (cols + 1) * 8, rows * (th + pad) + 8), (22, 22, 26))
     draw = ImageDraw.Draw(sheet)
     for idx, (label, path, ok) in enumerate(entries):
         r, c = divmod(idx, cols)
@@ -171,28 +208,33 @@ def build_contact_sheet(entries, out_path):
         im = Image.open(path).convert("RGB").resize((tw, th), Image.NEAREST)
         sheet.paste(im, (x0, y0 + pad))
         col = (100, 240, 120) if ok else (255, 90, 90)
-        draw.text((x0 + 4, y0 + 5), f"{'PASS' if ok else 'FAIL'}  {label}", fill=col)
+        draw.text((x0 + 4, y0 + 4), f"{'PASS' if ok else 'FAIL'} {label}", fill=col)
     sheet.save(out_path)
 
 
 def main():
+    print(f"Using VICE: {X64SC}")
     main_prg = os.path.join(WORKSPACE, "build", "cyclone.prg")
     compile_prg(main_prg)
 
     scenarios = [
         # (name, prg_flags, ntsc, sidmodel, cycles, verify_mode)
-        ("01_title_pal_8580",     None,                                  False, 1, 4500000, "screen"),
-        ("02_title_ntsc_6581",    None,                                  True,  0, 4500000, "screen"),
-        ("03_help_screen",        ["-DSKIP_TITLE", "-DTEST_SCENARIO=3"], False, 1, 4500000, "screen"),
-        ("04_title_to_flight",    ["-DSKIP_TITLE", "-DTEST_SCENARIO=4"], False, 1, 6000000, "gameplay"),
-        ("05_diag_nw_pal",        ["-DSKIP_TITLE", "-DTEST_SCENARIO=5"], False, 1, 7500000, "gameplay"),
-        ("06_diag_sw_pal",        ["-DSKIP_TITLE", "-DTEST_SCENARIO=6"], False, 1, 7500000, "gameplay"),
-        ("07_diag_nw_ntsc",       ["-DSKIP_TITLE", "-DTEST_SCENARIO=5"], True,  0, 7500000, "gameplay"),
-        ("08_south_view_flight",  ["-DSKIP_TITLE", "-DTEST_SCENARIO=8"], False, 1, 7000000, "gameplay"),
-        ("09_radar_map",          ["-DSKIP_TITLE", "-DTEST_SCENARIO=9"], False, 1, 4500000, "screen"),
-        ("10_storm_cyclone",      ["-DSKIP_TITLE", "-DTEST_SCENARIO=10"],False, 1, 5000000, "storm"),
-        ("11_winch_pickup",       ["-DSKIP_TITLE", "-DTEST_SCENARIO=11"],False, 1, 7000000, "gameplay"),
-        ("12_kokola_pad_landed",  ["-DSKIP_TITLE", "-DTEST_SCENARIO=12"],False, 1, 7000000, "gameplay"),
+        ("01_title_pal_8580",     None,                                   False, 1,  5800000, "screen"),
+        ("02_title_ntsc_6581",    None,                                   True,  0,  5800000, "screen"),
+        ("03_help_screen",        ["-DSKIP_TITLE", "-DTEST_SCENARIO=3"],  False, 1,  5800000, "screen"),
+        ("04_color_t0",           ["-DSKIP_TITLE", "-DTEST_SCENARIO=4"],  False, 1,  6000000, "gameplay"),
+        ("05_color_t8s",          ["-DSKIP_TITLE", "-DTEST_SCENARIO=5"],  False, 1, 14000000, "gameplay"),
+        ("06_8way_colorram_pal",  ["-DSKIP_TITLE", "-DTEST_SCENARIO=6"],  False, 1, 18000000, "gameplay"),
+        ("07_diag_nw_ntsc",       ["-DSKIP_TITLE", "-DTEST_SCENARIO=7"],  True,  0,  8000000, "gameplay"),
+        ("08_south_view_flight",  ["-DSKIP_TITLE", "-DTEST_SCENARIO=8"],  False, 1,  8000000, "gameplay"),
+        ("09_bitmap_radar_map",   ["-DSKIP_TITLE", "-DTEST_SCENARIO=9"],  False, 1, 11000000, "radar"),
+        ("10_radar_roundtrip",    ["-DSKIP_TITLE", "-DTEST_SCENARIO=10"], False, 1,  6500000, "gameplay"),
+        ("11_storm_cyclone",      ["-DSKIP_TITLE", "-DTEST_SCENARIO=11"], False, 1,  5500000, "storm"),
+        ("12_crate_winch_align",  ["-DSKIP_TITLE", "-DTEST_SCENARIO=12"], False, 1,  7000000, "gameplay"),
+        ("13_survivor_align",     ["-DSKIP_TITLE", "-DTEST_SCENARIO=13"], False, 1,  7000000, "gameplay"),
+        ("14_kokola_shadow",      ["-DSKIP_TITLE", "-DTEST_SCENARIO=14"], False, 1,  7500000, "gameplay"),
+        ("15_entity_audit_120",   ["-DSKIP_TITLE", "-DTEST_SCENARIO=15"], False, 1,  7500000, "gameplay"),
+        ("16_fuel_and_full_win",  ["-DSKIP_TITLE", "-DTEST_SCENARIO=16"], False, 1, 10000000, "gameplay"),
     ]
 
     results = []
@@ -207,13 +249,14 @@ def main():
         capture_vice(prg, png, ntsc=ntsc, sidmodel=sidmodel, cycles=cycles)
 
         if vmode == "gameplay":
-            ok, msg = verify_gameplay_frame(png, name, expect_land=True)
+            ok, msg = verify_gameplay_frame(png, expect_land=True)
         elif vmode == "storm":
-            # During raging tempest, MC1 darkens from LtGreen to Green, so skip LtGreen check
-            ok, msg = verify_gameplay_frame(png, name, expect_land=False)
+            ok, msg = verify_gameplay_frame(png, expect_land=False)
+        elif vmode == "radar":
+            ok, msg = verify_bitmap_radar(png)
         else:
             im = Image.open(png).convert("RGB")
-            ok = im.size[0] >= 320 and im.size[1] >= 200
+            ok = check_border_black(im) == 0 and im.size[0] >= 320
             msg = f"captured {im.size[0]}x{im.size[1]}"
 
         status = "PASS" if ok else "FAIL"
@@ -222,7 +265,15 @@ def main():
         if not ok:
             all_ok = False
 
-    # Clean up temporary build artifacts
+    # Cross-frame check: verify zero unexpected cliff shadow color shift between t=0s and t=8s!
+    st_ok, st_msg = verify_color_stability(
+        os.path.join(OUT_DIR, "04_color_t0.png"),
+        os.path.join(OUT_DIR, "05_color_t8s.png"),
+    )
+    print(f"[{'PASS' if st_ok else 'FAIL'}] {'color_stability_t0_t8s':22s} : {st_msg}")
+    if not st_ok:
+        all_ok = False
+
     for ext in ("prg", "map", "lbl", "int", "asm"):
         p = os.path.join(OUT_DIR, f"_tmp_test.{ext}")
         if os.path.exists(p):
@@ -231,7 +282,7 @@ def main():
     sheet_path = os.path.join(OUT_DIR, "contact_sheet.png")
     build_contact_sheet(results, sheet_path)
     print(f"\nContact sheet saved to: {sheet_path}")
-    print(f"Summary: {sum(1 for _, _, ok in results if ok)}/{len(results)} scenarios passed.")
+    print(f"Summary: {sum(1 for _, _, ok in results if ok)}/{len(results)} scenarios + stability check {'PASSED' if all_ok else 'FAILED'}.")
     sys.exit(0 if all_ok else 1)
 
 

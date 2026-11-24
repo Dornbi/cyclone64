@@ -27,4 +27,9 @@ void scroller_animate_water(void);
 int scroller_center_wx(void);
 int scroller_center_wy(void);
 
+#ifdef TEST_SCENARIO
+// On-target test helper: verifies every playfield cell's Color RAM matches CHAR_COLORS[front[i]]
+byte scroller_verify_color_ram(void);
+#endif
+
 #endif

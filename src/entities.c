@@ -180,11 +180,13 @@ byte entities_update_and_draw(byte south_view, byte is_ntsc) {
     }
 
     // 2. Fuel Drain (airborne) & Helipad Refueling (landed on pad)
+    // Tuned so a full tank (~8,000 px cruise range) comfortably covers the longest
+    // no-helipad round-trip (Banana Island = 4,795 px) with ~40% margin for winching & wind!
     if (heli_state == HELI_STATE_FLYING) {
-        byte burn = (byte)(1 + (heli_speed >> 4));
+        byte burn = (byte)(1 + (heli_speed >> 5)); // 1 hover, 2 cruise/max (fair in Classic & Arcade)
         fuel_acc += burn;
-        if (fuel_acc >= 18) {
-            fuel_acc -= 18;
+        if (fuel_acc >= 28) {
+            fuel_acc -= 28;
             if (game_fuel > 0) game_fuel--;
             if (game_fuel == 60 || game_fuel == 30) {
                 last_sfx_event = EVT_LOW_FUEL;

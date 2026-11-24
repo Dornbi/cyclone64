@@ -23,6 +23,7 @@ void world_render_col(byte *dst, int cam_tx, int cam_ty, byte sx, byte south_vie
 byte world_get_tile_at(int wx, int wy);
 byte world_get_ground_alt(int wx, int wy);
 byte world_get_surface_type(int wx, int wy);
+const byte *world_atlas_row(byte atlas_y, byte atlas_x);
 
 // Per-char color lookup (0..15 for Color RAM)
 extern const byte CHAR_COLORS[256];

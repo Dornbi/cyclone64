@@ -11,7 +11,7 @@
 #include <c64/keyboard.h>
 #include <string.h>
 
-// Keep Title & Help code in upper RAM ($9B00-$BFFF) and static strings in data_hi ($CC00-$CFFF)
+// Keep Title & Help in code_hi ($9B00-$BFFF) and static strings in data_hi ($CC00-$CFFF)
 #pragma code(code_hi)
 #pragma data(data_hi)
 
@@ -80,6 +80,8 @@ static const char * const LOGO_ROWS[5] = {
 static const byte LOGO_COLS[5] = {
     VCOL_WHITE, VCOL_YELLOW, VCOL_ORANGE, VCOL_LT_RED, VCOL_RED
 };
+
+#pragma code(code_hi)
 
 static void draw_options_status(byte is_ntsc) {
     t_puts(15, 5, "[C] CONTROLS :", VCOL_CYAN);

@@ -13,6 +13,9 @@
 #include <c64/vic.h>
 #include <c64/joystick.h>
 #include <c64/keyboard.h>
+#ifdef TEST_SCENARIO
+#include <string.h>
+#endif
 
 // Auto-detect PAL (50Hz, 312 lines) vs NTSC (60Hz, 263 lines) via VIC-II max rasterline
 static byte detect_ntsc(void) {

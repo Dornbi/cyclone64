@@ -23,7 +23,7 @@
 // $F000 - $F7FF : Hi-Res Cockpit HUD, Tactical Map & Title Charset
 // $F800 - $FFFF : Reserved + Hardware IRQ/NMI Vectors
 
-#pragma stacksize(512)
+#pragma stacksize(256)
 #pragma heapsize(0)
 
 #pragma section(worldmap_sec, 0)
@@ -31,13 +31,14 @@
 #pragma section(code_hi, 0)
 #pragma section(data_hi, 0)
 #pragma section(bss_hi, 0)
+#pragma section(code_cc, 0)
 #pragma section(boot_lzo_sec, 0)
 
 #pragma region(main, 0x0880, 0x5000, , , {code, data, bss})
 #pragma region(worldmap, 0x5000, 0x9b00, , , {worldmap_sec})
 #pragma region(tables, 0x9b00, 0xc000, , , {tables_sec, code_hi})
 #pragma region(boot_lzo, 0xc000, 0xcc00, , , {boot_lzo_sec})
-#pragma region(hi_cc, 0xcc00, 0xd000, , , {data_hi, bss_hi, stack})
+#pragma region(hi_cc, 0xcc00, 0xd000, , , {code_cc, data_hi, bss_hi, stack})
 
 // VIC-II Bank 3 pointers
 #define SCREEN_A        ((byte *)0xc000)
