@@ -6,7 +6,9 @@
 
 #include <c64/vic.h>
 
+#pragma bss(bss_hi)
 RescueEntity entities[NUM_ENTITIES];
+#pragma bss(bss)
 byte game_state       = GAME_PLAYING;
 byte game_fuel        = 255;
 unsigned int game_time_s  = 480;
@@ -139,8 +141,8 @@ static byte project_world_sprite(int px, int py, byte alt, byte south_view, int 
         sx = 31 + rel_x - 12;
         gy = 54 + rel_y;
     } else {
-        sx = 31 + (PF_COLS * 8 - 1 - rel_x) - 12;
-        gy = 54 + (PF_ROWS * 8 - 1 - rel_y);
+        sx = 24 + (PF_COLS * 8 - rel_x) - 12;
+        gy = 47 + (PF_ROWS * 8 - rel_y);
     }
     int sy = gy - (int)alt - 12;
     if (sy < 44 || sy > 184) return 0;

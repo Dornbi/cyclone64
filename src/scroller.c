@@ -27,6 +27,14 @@ static inline byte make_memptr(byte buf, byte south) {
     return buf ? MEMPTR_B_SOUTH : MEMPTR_A_SOUTH;
 }
 
+static byte calc_xscroll(void) {
+    return sc_south_view ? (byte)(sc_cam_px & 7) : (byte)(7 - (sc_cam_px & 7));
+}
+
+static byte calc_yscroll(void) {
+    return sc_south_view ? (byte)(sc_cam_py & 7) : (byte)(7 - (sc_cam_py & 7));
+}
+
 // Fast 760-byte directional copy from src -> dst with offset (dx, dy in -1..+1)
 static void shift_screen_buf(byte *dst, const byte *src, sbyte dx, sbyte dy) {
     // Source offset = dy*40 + dx
@@ -248,8 +256,8 @@ void scroller_redraw_full(void) {
     }
 
     active_buf ^= 1;
-    r_pf_xscroll = (byte)(7 - (sc_cam_px & 7));
-    r_pf_yscroll = (byte)(7 - (sc_cam_py & 7));
+    r_pf_xscroll = calc_xscroll();
+    r_pf_yscroll = calc_yscroll();
     r_pf_memptr  = make_memptr(active_buf, sc_south_view);
     raster_commit_playfield();
 
@@ -293,8 +301,8 @@ void scroller_move(sbyte dpx, sbyte dpy) {
     if (dx == 0 && dy == 0) {
         // Pure sub-tile hardware scroll: just wait for playfield done and latch new fine scroll!
         raster_wait_playfield_done();
-        r_pf_xscroll = (byte)(7 - (sc_cam_px & 7));
-        r_pf_yscroll = (byte)(7 - (sc_cam_py & 7));
+        r_pf_xscroll = calc_xscroll();
+        r_pf_yscroll = calc_yscroll();
         raster_commit_playfield();
         return;
     }
@@ -337,8 +345,8 @@ void scroller_move(sbyte dpx, sbyte dpy) {
         else if (vdx < 0) sync_col_colors(back, 0);
 
         active_buf ^= 1;
-        r_pf_xscroll = (byte)(7 - (sc_cam_px & 7));
-        r_pf_yscroll = (byte)(7 - (sc_cam_py & 7));
+        r_pf_xscroll = calc_xscroll();
+        r_pf_yscroll = calc_yscroll();
         r_pf_memptr  = make_memptr(active_buf, sc_south_view);
         raster_commit_playfield();
 
@@ -350,9 +358,6 @@ void scroller_move(sbyte dpx, sbyte dpy) {
 
 void scroller_toggle_view(void) {
     sc_south_view ^= 1;
-    // Flip fine scroll complement so viewport stays centered on the same pixel
-    sc_cam_px = (cur_tile_x << 3) + (7 - (sc_cam_px & 7));
-    sc_cam_py = (cur_tile_y << 3) + (7 - (sc_cam_py & 7));
     scroller_redraw_full();
 }
 

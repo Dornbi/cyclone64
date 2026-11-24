@@ -338,8 +338,8 @@ byte heli_sync_sprites(byte south_view) {
         screen_x = 31 + rel_x - 12;
         ground_y = 54 + rel_y;
     } else {
-        screen_x = 31 + (PF_COLS * 8 - 1 - rel_x) - 12;
-        ground_y = 54 + (PF_ROWS * 8 - 1 - rel_y);
+        screen_x = 24 + (PF_COLS * 8 - rel_x) - 12;
+        ground_y = 47 + (PF_ROWS * 8 - rel_y);
     }
 
     int heli_y = ground_y - (int)heli_alt - 12;

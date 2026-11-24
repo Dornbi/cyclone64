@@ -150,8 +150,8 @@ static byte project_hazard(int px, int py, byte alt, byte south_view, int *ox, i
         sx = 31 + rel_x - 12;
         gy = 54 + rel_y;
     } else {
-        sx = 31 + (PF_COLS * 8 - 1 - rel_x) - 12;
-        gy = 54 + (PF_ROWS * 8 - 1 - rel_y);
+        sx = 24 + (PF_COLS * 8 - rel_x) - 12;
+        gy = 47 + (PF_ROWS * 8 - rel_y);
     }
     int sy = gy - (int)alt - 12;
     if (sy < 42 || sy > 180) return 0;
