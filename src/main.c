@@ -62,49 +62,57 @@ int main(void) {
     byte prev_fire     = 0;
     byte fire_frames   = 0;
     byte fire_used_alt = 1;
-    byte prev_v        = 0;
+    byte prev_ret      = 0;
     byte prev_c        = 0;
     byte prev_m        = 1;
-    byte prev_f7       = 0;
+    byte prev_v        = 0;
+    byte prev_h        = 0;
     byte hud_tick      = 0;
 
-#ifdef PHASE4_RADAR_TEST
-    radar_map_show(is_ntsc);
-#endif
-
-#ifdef PHASE4_STORM_TEST
-    cyc_px = heli_px + 64;
-    cyc_py = heli_py - 16;
-    heli_alt = 28;
-    heli_state = HELI_STATE_FLYING;
+#ifdef TEST_SCENARIO
+    // Automated test harness hooks (compiled ONLY when running tools/run_tests.py!)
+    #include "test_hooks.inc"
 #endif
 
     for (;;) {
         joy_poll(1);
         keyb_poll();
 
+        // Direction: Joystick Port 2 OR I / J / K / L
         sbyte jx = joyx[1];
         sbyte jy = joyy[1];
-        if (key_pressed(KSCAN_A)) jx = -1;
-        if (key_pressed(KSCAN_D)) jx =  1;
-        if (key_pressed(KSCAN_W)) jy = -1;
-        if (key_pressed(KSCAN_S)) jy =  1;
+        if (key_pressed(KSCAN_J)) jx = -1;
+        if (key_pressed(KSCAN_L)) jx =  1;
+        if (key_pressed(KSCAN_I)) jy = -1;
+        if (key_pressed(KSCAN_K)) jy =  1;
 
+        // Altitude: Fire + Up/Down OR W (up) / S (down)
         sbyte direct_alt = 0;
-        if (key_pressed(KSCAN_Q)) direct_alt =  1;
-        if (key_pressed(KSCAN_Z)) direct_alt = -1;
+        if (key_pressed(KSCAN_W)) direct_alt =  1;
+        if (key_pressed(KSCAN_S)) direct_alt = -1;
 
         byte fire_now = joyb[1] ? 1 : 0;
-        byte v_now    = (key_pressed(KSCAN_V) || key_pressed(KSCAN_RETURN)) ? 1 : 0;
+        byte ret_now  = key_pressed(KSCAN_RETURN) ? 1 : 0;
         byte c_now    = key_pressed(KSCAN_C) ? 1 : 0;
         byte m_now    = (key_pressed(KSCAN_M) || key_pressed(KSCAN_SPACE)) ? 1 : 0;
-        byte f7_now   = key_pressed(KSCAN_F7) ? 1 : 0;
+        byte v_now    = key_pressed(KSCAN_V) ? 1 : 0;
+        byte h_now    = key_pressed(KSCAN_H) ? 1 : 0;
 
-        if (f7_now && !prev_f7) {
+        // V toggles SID audio mute cleanly
+        if (v_now && !prev_v) {
             audio_muted ^= 1;
             entities_set_banner(audio_muted ? "AUDIO: MUTED  " : "AUDIO: ON     ", VCOL_CYAN, 45);
         }
-        prev_f7 = f7_now;
+        prev_v = v_now;
+
+        // H opens full-screen Help overlay at any point during flight
+        if (h_now && !prev_h) {
+            help_screen_show(is_ntsc, 1);
+            prev_h = 1;
+            hud_tick = 3;
+            continue;
+        }
+        prev_h = h_now;
 
         // Record high score & handle Mission Complete / Game Over restart or return to Title
         if (game_state != GAME_PLAYING) {
@@ -160,7 +168,7 @@ int main(void) {
             fire_frames   = 0;
             fire_used_alt = 0;
         }
-        if (v_now && !prev_v) do_flip = 1;
+        if (ret_now && !prev_ret) do_flip = 1;
 
         if (c_now && !prev_c) {
             heli_ctrl_mode ^= 1;
@@ -207,7 +215,7 @@ int main(void) {
         last_sfx_event = EVT_NONE;
 
         prev_fire = fire_now;
-        prev_v    = v_now;
+        prev_ret  = ret_now;
         prev_c    = c_now;
         prev_m    = m_now;
 

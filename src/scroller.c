@@ -48,9 +48,13 @@ static void shift_screen_buf(byte *dst, const byte *src, sbyte dx, sbyte dy) {
 // Blazing-fast 18-row unrolled Color RAM shift ($D800..$DACF, 720 bytes)
 // Unrolling all 18 rows inside a single 40-column loop runs in ~6,600 cycles (~103 scanlines),
 // finishing cleanly inside the scanline 192..46 VBlank window on BOTH PAL and NTSC!
-#define SHIFT_ROWS_UP(OFF) \
+// CRITICAL: When vdx < 0 (off == 39 or -41, shifting pixels RIGHT so src_x = x - 1),
+// x MUST iterate BACKWARD (39 down to 1) so (row, x-1) is read BEFORE it is overwritten!
+// When vdx > 0 (off == 41 or -39, shifting pixels LEFT so src_x = x + 1),
+// x MUST iterate FORWARD (0 up to 38) so (row, x+1) is read BEFORE it is overwritten!
+#define SHIFT_UP_FWD(OFF, XEND) \
     do { \
-        for (byte x = 0; x < 40; x++) { \
+        for (byte x = 0; x < (XEND); x++) { \
             COLOR_RAM[ 0*40 + x] = COLOR_RAM[ 0*40 + (OFF) + x]; \
             COLOR_RAM[ 1*40 + x] = COLOR_RAM[ 1*40 + (OFF) + x]; \
             COLOR_RAM[ 2*40 + x] = COLOR_RAM[ 2*40 + (OFF) + x]; \
@@ -71,9 +75,55 @@ static void shift_screen_buf(byte *dst, const byte *src, sbyte dx, sbyte dy) {
         } \
     } while (0)
 
-#define SHIFT_ROWS_DN(UOFF) \
+#define SHIFT_UP_BWD(OFF) \
     do { \
-        for (byte x = 0; x < 40; x++) { \
+        for (byte x = 39; x >= 1; x--) { \
+            COLOR_RAM[ 0*40 + x] = COLOR_RAM[ 0*40 + (OFF) + x]; \
+            COLOR_RAM[ 1*40 + x] = COLOR_RAM[ 1*40 + (OFF) + x]; \
+            COLOR_RAM[ 2*40 + x] = COLOR_RAM[ 2*40 + (OFF) + x]; \
+            COLOR_RAM[ 3*40 + x] = COLOR_RAM[ 3*40 + (OFF) + x]; \
+            COLOR_RAM[ 4*40 + x] = COLOR_RAM[ 4*40 + (OFF) + x]; \
+            COLOR_RAM[ 5*40 + x] = COLOR_RAM[ 5*40 + (OFF) + x]; \
+            COLOR_RAM[ 6*40 + x] = COLOR_RAM[ 6*40 + (OFF) + x]; \
+            COLOR_RAM[ 7*40 + x] = COLOR_RAM[ 7*40 + (OFF) + x]; \
+            COLOR_RAM[ 8*40 + x] = COLOR_RAM[ 8*40 + (OFF) + x]; \
+            COLOR_RAM[ 9*40 + x] = COLOR_RAM[ 9*40 + (OFF) + x]; \
+            COLOR_RAM[10*40 + x] = COLOR_RAM[10*40 + (OFF) + x]; \
+            COLOR_RAM[11*40 + x] = COLOR_RAM[11*40 + (OFF) + x]; \
+            COLOR_RAM[12*40 + x] = COLOR_RAM[12*40 + (OFF) + x]; \
+            COLOR_RAM[13*40 + x] = COLOR_RAM[13*40 + (OFF) + x]; \
+            COLOR_RAM[14*40 + x] = COLOR_RAM[14*40 + (OFF) + x]; \
+            COLOR_RAM[15*40 + x] = COLOR_RAM[15*40 + (OFF) + x]; \
+            COLOR_RAM[16*40 + x] = COLOR_RAM[16*40 + (OFF) + x]; \
+        } \
+    } while (0)
+
+#define SHIFT_DN_FWD(UOFF, XEND) \
+    do { \
+        for (byte x = 0; x < (XEND); x++) { \
+            COLOR_RAM[17*40 + x] = COLOR_RAM[17*40 - (UOFF) + x]; \
+            COLOR_RAM[16*40 + x] = COLOR_RAM[16*40 - (UOFF) + x]; \
+            COLOR_RAM[15*40 + x] = COLOR_RAM[15*40 - (UOFF) + x]; \
+            COLOR_RAM[14*40 + x] = COLOR_RAM[14*40 - (UOFF) + x]; \
+            COLOR_RAM[13*40 + x] = COLOR_RAM[13*40 - (UOFF) + x]; \
+            COLOR_RAM[12*40 + x] = COLOR_RAM[12*40 - (UOFF) + x]; \
+            COLOR_RAM[11*40 + x] = COLOR_RAM[11*40 - (UOFF) + x]; \
+            COLOR_RAM[10*40 + x] = COLOR_RAM[10*40 - (UOFF) + x]; \
+            COLOR_RAM[ 9*40 + x] = COLOR_RAM[ 9*40 - (UOFF) + x]; \
+            COLOR_RAM[ 8*40 + x] = COLOR_RAM[ 8*40 - (UOFF) + x]; \
+            COLOR_RAM[ 7*40 + x] = COLOR_RAM[ 7*40 - (UOFF) + x]; \
+            COLOR_RAM[ 6*40 + x] = COLOR_RAM[ 6*40 - (UOFF) + x]; \
+            COLOR_RAM[ 5*40 + x] = COLOR_RAM[ 5*40 - (UOFF) + x]; \
+            COLOR_RAM[ 4*40 + x] = COLOR_RAM[ 4*40 - (UOFF) + x]; \
+            COLOR_RAM[ 3*40 + x] = COLOR_RAM[ 3*40 - (UOFF) + x]; \
+            COLOR_RAM[ 2*40 + x] = COLOR_RAM[ 2*40 - (UOFF) + x]; \
+            COLOR_RAM[ 1*40 + x] = COLOR_RAM[ 1*40 - (UOFF) + x]; \
+        } \
+    } while (0)
+
+#define SHIFT_DN_BWD(UOFF) \
+    do { \
+        for (byte x = 39; x >= 1; x--) { \
             COLOR_RAM[17*40 + x] = COLOR_RAM[17*40 - (UOFF) + x]; \
             COLOR_RAM[16*40 + x] = COLOR_RAM[16*40 - (UOFF) + x]; \
             COLOR_RAM[15*40 + x] = COLOR_RAM[15*40 - (UOFF) + x]; \
@@ -139,17 +189,17 @@ static void shift_color_ram(sbyte dx, sbyte dy) {
             COLOR_RAM[17*40 + 1 + x] = COLOR_RAM[17*40 + x];
         }
     } else if (off == 39) {
-        SHIFT_ROWS_UP(39);
+        SHIFT_UP_BWD(39);
     } else if (off == 40) {
-        SHIFT_ROWS_UP(40);
+        SHIFT_UP_FWD(40, 40);
     } else if (off == 41) {
-        SHIFT_ROWS_UP(41);
+        SHIFT_UP_FWD(41, 39);
     } else if (off == -39) {
-        SHIFT_ROWS_DN(39);
+        SHIFT_DN_FWD(39, 39);
     } else if (off == -40) {
-        SHIFT_ROWS_DN(40);
+        SHIFT_DN_FWD(40, 40);
     } else if (off == -41) {
-        SHIFT_ROWS_DN(41);
+        SHIFT_DN_BWD(41);
     }
 }
 

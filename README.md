@@ -24,12 +24,13 @@ A native **Commodore 64 (stock 64 KB, PAL & NTSC)** port of the 1985 ZX Spectrum
 
 | Input | Action |
 |---|---|
-| **Joystick Port 2** or **`W`/`A`/`S`/`D`** | Fly helicopter (Classic rotate+thrust or Direct 8-Way Arcade mode) |
-| **Fire + Up / Down** or **`Q` / `Z`** | Climb / Descend altitude |
-| **Quick-tap Fire** or **`V`** / **`Return`** | Flip 3D Camera View (`NORTH` ↔ `SOUTH`) |
+| **Joystick Port 2** or **`I` / `J` / `K` / `L`** | Fly helicopter (Classic rotate+thrust or Direct 8-Way Arcade mode) |
+| **Fire + Up / Down** or **`W` / `S`** | Climb / Descend altitude |
+| **Quick-tap Fire** or **`Return`** | Flip 3D Camera View (`NORTH` ↔ `SOUTH`) |
 | **`M`** or **`Space`** | Toggle Live Tactical Archipelago Radar Map |
 | **`C`** | Toggle Control Mode (`CLASSIC` / `ARCADE`) |
-| **`F7`** | Toggle SID Audio Mute |
+| **`V`** | Toggle SID Audio Mute (works in Title Menu & in-flight) |
+| **`H`** | Show Controls & Mission Help Screen (works in Title Menu & in-flight) |
 | **`1`–`7`** | Quick-warp to the 7 helipad islands |
 | **`T`** / **`Run/Stop`** *(after Game Over / Win)* | Return to Title Screen |
 
@@ -42,5 +43,6 @@ make all        # Build single-load build/cyclone.prg (49 KB, stock 64 KB C64)
 make disk       # Package bootable build/cyclone.d64 disk image
 make run        # Launch in VICE x64sc (PAL)
 make run-ntsc   # Launch in VICE x64sc (NTSC)
+make test       # Run 11-scenario automated VICE visual & hardware regression suite
 make screenshot # Capture PAL/NTSC Title & Gameplay verification screenshots
 ```

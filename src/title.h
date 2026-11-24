@@ -12,4 +12,7 @@ void title_record_score(unsigned int score10);
 // Show animated Title Screen & Options Menu until player launches mission
 void title_screen_show(byte is_ntsc);
 
+// Show full-screen Controls & Mission Help screen (works from both Title Menu and live Flight!)
+void help_screen_show(byte is_ntsc, byte in_flight);
+
 #endif
