@@ -50,10 +50,10 @@ static inline void set_spr_ptr_both(byte slot, byte ptr) {
 
 void cyclone_init(byte seed) {
     rng_state      = (byte)(seed * 37 + 0x53);
-    // Start Cyclone in one of the outer quadrants away from Base Island (2592, 3056)
+    // Start Cyclone in one of the far outer quadrants away from Base Island (2592, 3056)
     byte q = next_rng() & 3;
-    cyc_px = (q & 1) ? 4600 : 1200;
-    cyc_py = (q & 2) ? 4700 : 1100;
+    cyc_px = (q & 1) ? 5200 : 700;
+    cyc_py = (q & 2) ? 5200 : 700;
     cyc_dir        = next_rng() & 7;
     cyc_step_timer = 0;
     cyc_turn_cnt   = 0;
@@ -202,13 +202,8 @@ byte cyclone_update_and_draw(byte south_view, byte over_sea) {
         } else {
             lightning_cd--;
         }
-    } else if (cyc_wind_force >= 9) {
-        // Approaching Tropical Squall: slightly deeper sky & darker cliff shadows
-        r_pf_bg  = PF_BG_DEFAULT;
-        r_pf_mc1 = PF_MC1_DEFAULT;
-        r_pf_mc2 = VCOL_DARK_GREY;
     } else {
-        // Clear sunny tropical weather
+        // Normal tropical weather: consistent Medium Grey cliffs/shadows
         r_pf_bg  = PF_BG_DEFAULT;
         r_pf_mc1 = PF_MC1_DEFAULT;
         r_pf_mc2 = PF_MC2_DEFAULT;
