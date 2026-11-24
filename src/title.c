@@ -11,7 +11,6 @@
 #include <c64/keyboard.h>
 #include <string.h>
 
-// Keep Title & Help in code_hi ($9B00-$BFFF) and static strings in data_hi ($CC00-$CFFF)
 #pragma code(code_hi)
 #pragma data(data_hi)
 
@@ -23,29 +22,13 @@ void title_record_score(unsigned int score10) {
     }
 }
 
-static byte t_scr(char ch) {
-    if (ch >= 'A' && ch <= 'Z') return (byte)(ch - 'A' + 1);
-    if (ch >= '0' && ch <= '9') return (byte)ch;
-    if (ch == ':') return 58;
-    if (ch == '-') return 45;
-    if (ch == '/') return 47;
-    if (ch == '.') return 46;
-    if (ch == '[') return 27;
-    if (ch == ']') return 29;
-    if (ch == '!') return 33;
-    if (ch == '>') return 62;
-    if (ch == '<') return 60;
-    if (ch == '#') return 72; // Solid block for big CYCLONE logo
-    return 32;
-}
-
 static void t_puts(byte row, byte col, const char *s, byte color) {
     unsigned int off = (unsigned int)row * 40 + col;
     byte *scr  = SCREEN_HUD + off;
     byte *colr = COLOR_RAM + off;
     byte i = 0;
     while (s[i] && (byte)(col + i) < 40) {
-        scr[i]  = t_scr(s[i]);
+        scr[i]  = hud_ascii_to_code(s[i]);
         colr[i] = color;
         i++;
     }

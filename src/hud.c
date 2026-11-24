@@ -11,7 +11,7 @@
 #define HUD_CHAR_EMPTY  74
 #define HUD_CHAR_HELI   75
 
-static byte ascii_to_hud(char ch) {
+byte hud_ascii_to_code(char ch) {
     if (ch >= 'A' && ch <= 'Z') return (byte)(ch - 'A' + 1);
     if (ch >= 'a' && ch <= 'z') return (byte)(ch - 'a' + 1);
     if (ch >= '0' && ch <= '9') return (byte)ch;
@@ -22,6 +22,7 @@ static byte ascii_to_hud(char ch) {
     if (ch == '[') return 27;
     if (ch == ']') return 29;
     if (ch == '!') return 33;
+    if (ch == '#') return 72;
     return 32;
 }
 
@@ -31,7 +32,7 @@ static void hud_puts(byte row, byte col, const char *s, byte color) {
     byte *colr = HUD_COL_BASE + off;
     byte i = 0;
     while (s[i]) {
-        scr[i]  = ascii_to_hud(s[i]);
+        scr[i]  = hud_ascii_to_code(s[i]);
         colr[i] = color;
         i++;
     }
@@ -180,7 +181,7 @@ void hud_update_game(byte south_view, byte island_id,
     byte text_col = (island_id < NUM_ISLANDS) ? VCOL_LT_GREEN : VCOL_LT_BLUE;
     byte i = 0;
     while (name[i] && i < 15) {
-        scr[i] = ascii_to_hud(name[i]);
+        scr[i] = hud_ascii_to_code(name[i]);
         col[i] = text_col;
         i++;
     }

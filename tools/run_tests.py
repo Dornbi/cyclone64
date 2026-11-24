@@ -227,7 +227,7 @@ def main():
         ("06_8way_colorram_pal",  ["-DSKIP_TITLE", "-DTEST_SCENARIO=6"],  False, 1, 18000000, "gameplay"),
         ("07_diag_nw_ntsc",       ["-DSKIP_TITLE", "-DTEST_SCENARIO=7"],  True,  0,  8000000, "gameplay"),
         ("08_south_view_flight",  ["-DSKIP_TITLE", "-DTEST_SCENARIO=8"],  False, 1,  8000000, "gameplay"),
-        ("09_bitmap_radar_map",   ["-DSKIP_TITLE", "-DTEST_SCENARIO=9"],  False, 1, 11000000, "radar"),
+        ("09_bitmap_radar_map",   ["-DSKIP_TITLE", "-DTEST_SCENARIO=9"],  False, 1,  6200000, "radar"),
         ("10_radar_roundtrip",    ["-DSKIP_TITLE", "-DTEST_SCENARIO=10"], False, 1,  6500000, "gameplay"),
         ("11_storm_cyclone",      ["-DSKIP_TITLE", "-DTEST_SCENARIO=11"], False, 1,  5500000, "storm"),
         ("12_crate_winch_align",  ["-DSKIP_TITLE", "-DTEST_SCENARIO=12"], False, 1,  7000000, "gameplay"),

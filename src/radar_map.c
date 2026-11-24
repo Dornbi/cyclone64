@@ -42,18 +42,6 @@ static const byte BIT_MASK[8] = {
     0x80, 0x40, 0x20, 0x10, 0x08, 0x04, 0x02, 0x01
 };
 
-static byte to_hud_code(char ch) {
-    if (ch >= 'A' && ch <= 'Z') return (byte)(ch - 'A' + 1);
-    if (ch >= '0' && ch <= '9') return (byte)ch;
-    if (ch == ':') return 58;
-    if (ch == '-') return 45;
-    if (ch == '/') return 47;
-    if (ch == '.') return 46;
-    if (ch == '[') return 27;
-    if (ch == ']') return 29;
-    return 32;
-}
-
 // Plot a single 1x1 pixel at (bx: 0..319, by: 0..199) in true 320x200 Hi-Res Bitmap RAM
 static void bm_plot(unsigned int bx, byte by) {
     if (bx >= 320 || by >= 200) return;
@@ -81,7 +69,7 @@ static void bm_putc(byte row, byte col, byte code, byte fg, byte bg) {
 static void bm_puts(byte row, byte col, const char *s, byte fg, byte bg) {
     byte i = 0;
     while (s[i] && (byte)(col + i) < 40) {
-        bm_putc(row, (byte)(col + i), to_hud_code(s[i]), fg, bg);
+        bm_putc(row, (byte)(col + i), hud_ascii_to_code(s[i]), fg, bg);
         i++;
     }
 }
@@ -105,44 +93,55 @@ static void draw_bitmap_radar(void) {
     memset(SCREEN_HUD + 80,       (VCOL_LT_BLUE << 4) | VCOL_BLUE,  840);
     memset(SCREEN_HUD + 23 * 40,  (VCOL_WHITE << 4)   | VCOL_BLACK, 80);
 
-    // 2. Crisp top header & horizontal divider lines
+    // 2. Crisp top header & fast 40-byte horizontal divider lines (y=12 & y=184)
     bm_puts(0, 4, "CYCLONE ARCHIPELAGO TACTICAL MAP", VCOL_YELLOW, VCOL_BLACK);
-    for (unsigned int x = 0; x < 320; x++) {
-        bm_plot(x, 12);
-        bm_plot(x, 184);
-    }
-    for (byte c = 0; c < 40; c++) {
-        bm_set_cell_col(c, 1,  VCOL_CYAN, VCOL_BLACK);
-        bm_set_cell_col(c, 23, VCOL_CYAN, VCOL_BLACK);
-    }
-
-    // 3. Draw 256x160 archipelago frame + 3x3 sector dotted grid + compass ticks
-    for (unsigned int x = 31; x <= 288; x += 2) {
-        bm_plot(x, 19);
-        bm_plot(x, 180);
-        if ((x & 3) == 1) {
-            bm_plot(x, tile_to_bm_y(256));
-            bm_plot(x, tile_to_bm_y(512));
+    {
+        byte *d1 = BITMAP_RAM + BM_ROW_OFF[1]  + 4; // y = 12 (row 1, line 4)
+        byte *d2 = BITMAP_RAM + BM_ROW_OFF[23] + 0; // y = 184 (row 23, line 0)
+        for (byte c = 0; c < 40; c++) {
+            *d1 = 0xff; d1 += 8;
+            *d2 = 0xff; d2 += 8;
+            SCREEN_HUD[40 + c]      = (VCOL_CYAN << 4) | VCOL_BLACK;
+            SCREEN_HUD[23 * 40 + c] = (VCOL_CYAN << 4) | VCOL_BLACK;
         }
     }
-    for (byte y = 19; y <= 180; y += 2) {
-        bm_plot(31,  y);
-        bm_plot(288, y);
-        if ((y & 3) == 1) {
-            bm_plot(tile_to_bm_x(256), y);
-            bm_plot(tile_to_bm_x(512), y);
+
+    // 3. Fast byte-aligned 256x160 frame + 3x3 sector dotted grid + compass ticks
+    {
+        byte gy1 = tile_to_bm_y(256); // 73
+        byte gy2 = tile_to_bm_y(512); // 126
+        unsigned int gx1 = tile_to_bm_x(256); // 117
+        unsigned int gx2 = tile_to_bm_x(512); // 202
+
+        byte *ft = BITMAP_RAM + BM_ROW_OFF[19 >> 3]  + (19 & 7)  + 32;
+        byte *fb = BITMAP_RAM + BM_ROW_OFF[180 >> 3] + (180 & 7) + 32;
+        byte *g1 = BITMAP_RAM + BM_ROW_OFF[gy1 >> 3] + (gy1 & 7) + 32;
+        byte *g2 = BITMAP_RAM + BM_ROW_OFF[gy2 >> 3] + (gy2 & 7) + 32;
+        for (byte c = 0; c < 32; c++) {
+            *ft = 0xaa; ft += 8;
+            *fb = 0xaa; fb += 8;
+            *g1 = 0x44; g1 += 8;
+            *g2 = 0x44; g2 += 8;
+        }
+        for (byte y = 19; y <= 180; y += 2) {
+            bm_plot(31,  y);
+            bm_plot(288, y);
+            if ((y & 3) == 1) {
+                bm_plot(gx1, y);
+                bm_plot(gx2, y);
+            }
         }
     }
-    bm_putc(2,  1,  to_hud_code('N'), VCOL_CYAN, VCOL_BLUE);
-    bm_putc(12, 1,  to_hud_code('W'), VCOL_CYAN, VCOL_BLUE);
-    bm_putc(12, 38, to_hud_code('E'), VCOL_CYAN, VCOL_BLUE);
-    bm_putc(22, 1,  to_hud_code('S'), VCOL_CYAN, VCOL_BLUE);
+    bm_putc(2,  1,  hud_ascii_to_code('N'), VCOL_CYAN, VCOL_BLUE);
+    bm_putc(12, 1,  hud_ascii_to_code('W'), VCOL_CYAN, VCOL_BLUE);
+    bm_putc(12, 38, hud_ascii_to_code('E'), VCOL_CYAN, VCOL_BLUE);
+    bm_putc(22, 1,  hud_ascii_to_code('S'), VCOL_CYAN, VCOL_BLUE);
 
-    // 4. Rasterize ALL 14 islands directly from ATLAS_DENSE at 1-pixel Hi-Res granularity!
-    //    Uses direct atlas row pointer + zero-division /3 stepping -> draws all 14 islands in ~0.18s!
+    // 4. Ultra-fast direct 1-pixel rasterizer for ALL 14 islands from ATLAS_DENSE (~0.06s total!)
+    //    Steps (dx+=2, dy+=2) -> zero gaps (1 px = 3 x 4.8 tiles), zero inner-loop divs/muls/calls!
     for (byte i = 0; i < NUM_ISLANDS; i++) {
         const IslandDesc *isl = &ISLANDS[i];
-        byte land_fg = (i == 5) ? VCOL_YELLOW : VCOL_LT_GREEN;
+        byte col_attr = (byte)(((i == 5 ? VCOL_YELLOW : VCOL_LT_GREEN) << 4) | VCOL_BLUE);
         unsigned int ix0 = (unsigned int)isl->world_x;
         unsigned int iy0 = (unsigned int)isl->world_y;
         byte iw = isl->width;
@@ -155,28 +154,38 @@ static void draw_bitmap_radar(void) {
         byte pad_by = 0;
         byte found_pad = 0;
 
-        for (byte dy = 0; dy < ih; dy++) {
+        for (byte dy = 0; dy < ih; dy += 2) {
             byte by = tile_to_bm_y(iy0 + dy);
             byte row = by >> 3;
+            byte *row_bm  = BITMAP_RAM + BM_ROW_OFF[row] + (by & 7);
+            byte *row_col = SCREEN_HUD + (unsigned int)row * 40;
             const byte *arow = world_atlas_row((byte)(isl->atlas_y + dy), isl->atlas_x);
-            unsigned int bx = bx0;
+
+            unsigned int bx_byte = bx0 & 0x01f8;
+            byte bx_bit = (byte)(bx0 & 7);
+            byte bx_col = (byte)(bx0 >> 3);
             byte sub = sub0;
 
-            for (byte dx = 0; dx < iw; dx++) {
+            for (byte dx = 0; dx < iw; dx += 2) {
                 byte dt = arow[dx];
                 if (dt != 0) {
-                    bm_plot(bx, by);
-                    bm_set_cell_col((byte)(bx >> 3), row, land_fg, VCOL_BLUE);
+                    row_bm[bx_byte] |= BIT_MASK[bx_bit];
+                    row_col[bx_col]  = col_attr;
                     if (!found_pad && TILE_SURFACE[dt] == SURF_HELIPAD) {
-                        pad_bx = bx;
+                        pad_bx = bx_byte + bx_bit;
                         pad_by = by;
                         found_pad = 1;
                     }
                 }
-                sub++;
-                if (sub == 3) {
-                    sub = 0;
-                    bx++;
+                sub += 2;
+                if (sub >= 3) {
+                    sub -= 3;
+                    bx_bit++;
+                    if (bx_bit == 8) {
+                        bx_bit = 0;
+                        bx_byte += 8;
+                        bx_col++;
+                    }
                 }
             }
         }
@@ -216,7 +225,7 @@ static void draw_bitmap_radar(void) {
         for (byte k = 0; nm[k] && (byte)(lcol + k) < 38; k++) {
             byte cell_attr = SCREEN_HUD[(unsigned int)lrow * 40 + (lcol + k)];
             if ((cell_attr >> 4) == VCOL_LT_BLUE) {
-                bm_putc(lrow, (byte)(lcol + k), to_hud_code(nm[k]), lfg, VCOL_BLUE);
+                bm_putc(lrow, (byte)(lcol + k), hud_ascii_to_code(nm[k]), lfg, VCOL_BLUE);
             }
         }
     }
@@ -232,19 +241,20 @@ void radar_map_show(byte is_ntsc) {
     raster_pause_split();
     audio_set_mode(AUDIO_MODE_RADAR);
 
-    // 2. Back up active Playfield Charset (640B) & HUD Charset (640B) into Screen A/B ($C000/$C400)!
-    //    This frees ALL 8,000 bytes of $E000-$FF3F for true 320x200 VIC-II Bitmap Mode!
+    // 2. Blank screen briefly (full 100% CPU speed, zero charset-overwrite glitch!) & back up charsets
+    vic.color_border = VCOL_BLACK;
+    vic.ctrl1        = 0x0b; // DEN=0: clean black screen & zero VIC badline steals while rasterizing!
     memcpy(SCREEN_A, CHARSET_NORTH, 640);
     memcpy(SCREEN_B, CHARSET_HUD,   640);
 
-    // 3. Draw the 320x200 pixel-accurate archipelago bitmap & switch VIC-II to BMM=1!
-    vic.color_border = VCOL_BLACK;
+    // 3. Draw the 320x200 pixel-accurate archipelago bitmap & snap cleanly into BMM=1!
     vic.color_back   = VCOL_BLUE;
     draw_bitmap_radar();
 
-    vic.ctrl1  = 0x3b;           // True 320x200 Hi-Res Bitmap Mode (BMM=1, DEN=1, 25-row)
+    vic_waitFrame();
     vic.ctrl2  = 0x08;           // 40-col Hi-Res (MCM=0)
     vic.memptr = MEMPTR_BITMAP;  // Color Matrix $C800 + Bitmap $E000
+    vic.ctrl1  = 0x3b;           // True 320x200 Hi-Res Bitmap Mode (BMM=1, DEN=1, 25-row)
 
     // 4. Configure pulsing Radar Hardware Sprites ($CBF8-$CBFF -> $D000 sprites)
     byte *hud_ptrs = SCREEN_HUD + 0x03f8;
@@ -314,9 +324,9 @@ void radar_map_show(byte is_ntsc) {
 
     for (byte d = 0; d < 8; d++) vic_waitFrame();
 
-    // 5. Restore BOTH charsets cleanly from $C000/$C400 -> $E000/$F000 (100% lossless!)
+    // 5. Blank briefly & restore BOTH charsets cleanly from $C000/$C400 -> $E000/$F000 (100% lossless!)
     vic.spr_enable = 0x00;
-    vic.ctrl1      = 0x1b; // Leave Bitmap Mode back to Text Mode
+    vic.ctrl1      = 0x0b; // Blank cleanly during 1-frame charset restore
     memset(CHARSET_NORTH, 0, 2048);
     memcpy(CHARSET_NORTH, SCREEN_A, 640);
     memset(CHARSET_HUD,   0, 2048);

@@ -3,6 +3,9 @@
 
 #include <c64/types.h>
 
+// Convert ASCII character to HUD/Title/Map screen code
+byte hud_ascii_to_code(char ch);
+
 // Initialize the 4-row Hi-Res Cockpit Instrument Panel
 void hud_init(void);
 
