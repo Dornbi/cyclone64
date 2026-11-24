@@ -335,11 +335,11 @@ void radar_map_show(byte is_ntsc) {
     // 6. Restore Helicopter sprite config, Cockpit HUD, Audio, Playfield & Raster Split!
     vic.spr_expand_x = 0x00;
     vic.spr_expand_y = 0x00;
-    vic.spr_multi    = 0x01;
+    vic.spr_multi    = 0x02;
     vic.spr_mcolor0  = VCOL_WHITE;
     vic.spr_mcolor1  = VCOL_BLACK;
-    vic.spr_color[0] = VCOL_LT_RED;
-    vic.spr_color[1] = VCOL_BLACK;
+    vic.spr_color[0] = VCOL_BLACK;
+    vic.spr_color[1] = VCOL_LT_RED;
     vic.spr_color[2] = VCOL_DARK_GREY;
 
     hud_init();

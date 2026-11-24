@@ -204,11 +204,11 @@ void help_screen_show(byte is_ntsc, byte in_flight) {
         vic.spr_enable   = 0x00;
         vic.spr_expand_x = 0x00;
         vic.spr_expand_y = 0x00;
-        vic.spr_multi    = 0x01;
+        vic.spr_multi    = 0x02;
         vic.spr_mcolor0  = VCOL_WHITE;
         vic.spr_mcolor1  = VCOL_BLACK;
-        vic.spr_color[0] = VCOL_LT_RED;
-        vic.spr_color[1] = VCOL_BLACK;
+        vic.spr_color[0] = VCOL_BLACK;
+        vic.spr_color[1] = VCOL_LT_RED;
         vic.spr_color[2] = VCOL_DARK_GREY;
 
         hud_init();
@@ -227,23 +227,23 @@ void title_screen_show(byte is_ntsc) {
     audio_set_mode(AUDIO_MODE_TITLE);
 
     // Configure animated Title Screen Hardware Sprites on SCREEN_HUD pointers ($CBF8-$CBFF):
-    //   0 = Rescue Helicopter (MC)
-    //   1 = Spinning Rotor Overlay (Hi-Res)
+    //   0 = Spinning Rotor Overlay (Hi-Res, drawn IN FRONT of fuselage!)
+    //   1 = Rescue Helicopter (MC)
     //   2 = 2x Swirling Red Cyclone Funnel (MC)
     //   3 = Pulsing Medical Crate Beacon (MC)
     byte *ptrs = SCREEN_HUD + 0x03f8;
-    ptrs[0] = (byte)(SPR_PTR_HELI_BASE + 4);
-    ptrs[1] = SPR_PTR_ROTOR_BASE;
+    ptrs[0] = SPR_PTR_ROTOR_BASE;
+    ptrs[1] = (byte)(SPR_PTR_HELI_BASE + 4);
     ptrs[2] = SPR_PTR_CYC_BASE;
     ptrs[3] = SPR_PTR_CRATE_BASE;
 
     vic.spr_mcolor0  = VCOL_WHITE;
     vic.spr_mcolor1  = VCOL_BLACK;
-    vic.spr_multi    = 0x0d; // Sprites 0, 2, 3 multicolor; 1 hi-res rotor
+    vic.spr_multi    = 0x0e; // Sprites 1, 2, 3 multicolor; 0 hi-res rotor
     vic.spr_expand_x = 0x04; // 2x expanded Cyclone funnel on Sprite 2!
     vic.spr_expand_y = 0x04;
-    vic.spr_color[0] = VCOL_LT_RED;
-    vic.spr_color[1] = VCOL_BLACK;
+    vic.spr_color[0] = VCOL_BLACK;
+    vic.spr_color[1] = VCOL_LT_RED;
     vic.spr_color[2] = VCOL_RED;
     vic.spr_color[3] = VCOL_YELLOW;
 
@@ -266,13 +266,13 @@ void title_screen_show(byte is_ntsc) {
         if (hx < 48)  hdx =  1;
         int hy = 122 + (int)((tick & 16) ? 1 : 0);
 
-        ptrs[0] = (byte)(SPR_PTR_HELI_BASE + ((hdx > 0) ? 4 : 12));
-        ptrs[1] = (byte)(SPR_PTR_ROTOR_BASE + ((tick >> 1) & 3));
+        ptrs[0] = (byte)(SPR_PTR_ROTOR_BASE + ((tick >> 1) & 3));
+        ptrs[1] = (byte)(SPR_PTR_HELI_BASE + ((hdx > 0) ? 4 : 12));
         ptrs[2] = (byte)(SPR_PTR_CYC_BASE + ((tick >> 2) & 3));
         ptrs[3] = (byte)(SPR_PTR_CRATE_BASE + ((tick >> 4) & 1));
 
-        vic_sprxy(0, hx, hy);
-        vic_sprxy(1, hx, hy - 2);
+        vic_sprxy(0, hx, hy - 2);
+        vic_sprxy(1, hx, hy);
         vic_sprxy(2, 266 + (int)((tick & 31) < 16 ? (tick & 15) >> 2 : (15 - (tick & 15)) >> 2), 111);
         vic_sprxy(3, 66, 134);
         vic.spr_enable = 0x0f;
@@ -327,11 +327,11 @@ void title_screen_show(byte is_ntsc) {
     vic.spr_enable   = 0x00;
     vic.spr_expand_x = 0x00;
     vic.spr_expand_y = 0x00;
-    vic.spr_multi    = 0x01;
+    vic.spr_multi    = 0x02;
     vic.spr_mcolor0  = VCOL_WHITE;
     vic.spr_mcolor1  = VCOL_BLACK;
-    vic.spr_color[0] = VCOL_LT_RED;
-    vic.spr_color[1] = VCOL_BLACK;
+    vic.spr_color[0] = VCOL_BLACK;
+    vic.spr_color[1] = VCOL_LT_RED;
     vic.spr_color[2] = VCOL_DARK_GREY;
 
     raster_resume_split();

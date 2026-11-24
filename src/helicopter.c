@@ -70,14 +70,14 @@ static void set_spr_ptrs(byte s0, byte s1, byte s2) {
 }
 
 static void setup_vic_sprites(void) {
-    vic.spr_multi    = (vic.spr_multi & 0xf8) | 0x01; // Sprite 0 = MC, Sprites 1 & 2 = Hi-Res
+    vic.spr_multi    = (vic.spr_multi & 0xf8) | 0x02; // Sprite 0 = Hi-Res Rotor (in front!), 1 = MC Heli, 2 = Shadow
     vic.spr_expand_x = 0x00;
     vic.spr_expand_y = 0x00;
     vic.spr_priority = 0x00;
     vic.spr_mcolor0  = VCOL_WHITE;
     vic.spr_mcolor1  = VCOL_BLACK;
-    vic.spr_color[0] = VCOL_LT_RED;
-    vic.spr_color[1] = VCOL_BLACK;
+    vic.spr_color[0] = VCOL_BLACK;
+    vic.spr_color[1] = VCOL_LT_RED;
     vic.spr_color[2] = VCOL_DARK_GREY;
 }
 
@@ -135,7 +135,7 @@ void heli_force_crash(void) {
     heli_speed   = 0;
     vel_x        = 0;
     vel_y        = 0;
-    vic.spr_color[0] = VCOL_ORANGE;
+    vic.spr_color[1] = VCOL_ORANGE;
     last_sfx_event = EVT_CRASH;
     entities_set_banner("! CRASHED !   ", VCOL_RED, 44);
 }
@@ -353,16 +353,16 @@ byte heli_sync_sprites(byte south_view) {
     if (heli_state == HELI_STATE_CRASHING) {
         byte frame = crash_timer >> 3;
         if (frame > 5) frame = 5;
-        set_spr_ptrs((byte)(SPR_PTR_EXPL_BASE + frame), SPR_PTR_ROTOR_BASE, SPR_PTR_SHAD_BASE);
-        vic_sprxy(0, screen_x, heli_y);
-        return 0x01;
+        set_spr_ptrs(SPR_PTR_ROTOR_BASE, (byte)(SPR_PTR_EXPL_BASE + frame), SPR_PTR_SHAD_BASE);
+        vic_sprxy(1, screen_x, heli_y);
+        return 0x02;
     }
 
     byte vis_heading = south_view ? (byte)((heli_heading + 8) & 15) : heli_heading;
 
     set_spr_ptrs(
-        (byte)(SPR_PTR_HELI_BASE  + vis_heading),
         (byte)(SPR_PTR_ROTOR_BASE + rotor_phase),
+        (byte)(SPR_PTR_HELI_BASE  + vis_heading),
         (byte)(SPR_PTR_SHAD_BASE  + vis_heading)
     );
 
