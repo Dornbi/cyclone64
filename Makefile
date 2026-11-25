@@ -17,7 +17,7 @@ OSCAR_FLAGS = -ii="$(OSCAR64_INC)" -Os -Oo -tm=c64 -n -xz
 SRCS = src/main.c src/world.c src/raster.c src/scroller.c src/helicopter.c src/entities.c src/cyclone.c src/radar_map.c src/hud.c src/audio.c src/title.c
 HDRS = src/memmap.h src/world.h src/raster.h src/scroller.h src/helicopter.h src/entities.h src/cyclone.h src/radar_map.h src/hud.h src/audio.h src/title.h generated/islands_data.h
 
-.PHONY: all extract assets clean run run-ntsc disk screenshot test
+.PHONY: all extract assets clean run run-ntsc disk screenshot test release
 
 all: $(PRG)
 
@@ -54,6 +54,10 @@ screenshot: $(PRG)
 
 test: $(PRG)
 	X64SC="$(X64SC_NOFOCUS)" $(PYTHON) tools/run_tests.py
+
+release: $(PRG)
+	mkdir -p bin
+	cp $(PRG) bin/cyclone.prg
 
 clean:
 	rm -rf $(BUILD_DIR)

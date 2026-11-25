@@ -25,7 +25,28 @@ A native **Commodore 64** port of the 1985 ZX Spectrum 3D helicopter rescue clas
 
 ---
 
-## Mission & How to Play
+## How to Play
+
+### Play in Your Browser
+
+There are many online and offline C64 emulators. One of the easiest is https://ty64.krissz.hu/ — click the web icon and paste:
+
+```
+https://github.com/Dornbi/cyclone/raw/refs/heads/main/bin/cyclone.prg
+```
+
+Alternatively, download the release binary directly and upload or load it into any online or offline C64 emulator:
+
+- [cyclone.prg](bin/cyclone.prg) — Single-load C64 PRG (stock 64 KB, auto-detects PAL/NTSC and SID 6581/8580)
+
+Emulators:
+
+- https://ty64.krissz.hu/ (online)
+- https://c64online.com/ (online)
+- https://retrogamecoders.com/c64-emulator/ (online)
+- [VICE](https://vice-emu.sourceforge.io/) (offline)
+
+### Mission Objectives
 
 1. **Take off** from the Base Island helipad (`W` or `Fire + Up`).
 2. **Recover all 5 Medical Crates** hidden across outer islands (hover low and slow over a flashing crate or waving **Survivor** to automatically deploy the winch) before the **08:00** countdown expires.
@@ -64,6 +85,7 @@ A native **Commodore 64** port of the 1985 ZX Spectrum 3D helicopter rescue clas
 
 ## Repository Layout
 
+- `bin/` — Pre-built release binary ([cyclone.prg](bin/cyclone.prg))
 - `src/` — C64 C source files (`main.c`, `world.c`, `raster.c`, `scroller.c`, `helicopter.c`, `entities.c`, `cyclone.c`, `radar_map.c`, `hud.c`, `audio.c`, `title.c`, `memmap.h`, `test_hooks.inc`)
 - `tools/` — Python asset & verification pipeline (`extract_spectrum.py`, `build_assets.py`, `build_sprites.py`, `run_tests.py`)
 - `generated/` — Pre-built C64 charsets, sprite bank, tile tables, and dense archipelago atlas
@@ -78,6 +100,7 @@ Requires [Oscar64](https://github.com/drmortalwombat/oscar64), Python 3 (with Pi
 
 ```bash
 make all        # Build stock 64 KB single-load build/cyclone.prg (~50 KB)
+make release    # Build and update bin/cyclone.prg
 make run        # Launch in VICE x64sc (PAL 50 Hz)
 make run-ntsc   # Launch in VICE x64sc (NTSC 60 Hz)
 make test       # Run 16-scenario on-target VICE visual, alignment & playability suite
