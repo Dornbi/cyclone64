@@ -100,8 +100,8 @@ static void draw_title_screen(byte is_ntsc) {
         t_puts((byte)(1 + r), 1, LOGO_ROWS[r], LOGO_COLS[r]);
     }
 
-    // Edition & Vortex homage subtitle (row 7 — cleanly above animated sky!)
-    t_puts(7,  3, "COMMODORE 64 EDITION - VORTEX 1985", VCOL_LT_GREY);
+    // Edition subtitle (row 7 — cleanly above animated sky!)
+    t_puts(7, 10, "COMMODORE 64 EDITION", VCOL_LT_GREY);
 
     // Tropical island silhouette & helipad along row 11 (above divider)
     for (byte x = 2; x < 12; x++) {

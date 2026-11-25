@@ -85,7 +85,7 @@ def generate_helicopter_angle(angle_idx):
     fx, fy = math.sin(theta), -math.cos(theta)  # Forward unit vector
     rx, ry = math.cos(theta), math.sin(theta)   # Right unit vector
 
-    # Slight 3D oblique squash in Y (0.86) to match Costa Panayi's angled 3D view!
+    # Slight 3D oblique squash in Y (0.86) to match the angled 3D view!
     y_squash = 0.88
 
     # Evaluate on 21x12 multicolor grid (cx=5.5, cy=10.0; MC pixels are 2x wide!)

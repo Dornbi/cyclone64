@@ -1,25 +1,27 @@
 # Cyclone — Commodore 64 Edition
 
-A native **Commodore 64 (stock 64 KB, PAL & NTSC)** port of the 1985 ZX Spectrum 3D helicopter rescue classic **Cyclone** (Costa Panayi / Vortex Software), built from a clean-room reverse engineering of the original Z80 archipelago map and gameplay logic and re-engineered in C ([Oscar64](https://github.com/drmortalwombat/oscar64)) to take full advantage of C64 **VIC-II** graphics and **SID** audio.
+A native **Commodore 64** port of the 1985 ZX Spectrum 3D helicopter rescue classic **Cyclone** (Costa Panayi / Vortex Software), built from a clean-room reverse engineering of the original Z80 archipelago map and gameplay logic and re-engineered in C ([Oscar64](https://github.com/drmortalwombat/oscar64)) to take full advantage of C64 **VIC-II** graphics and **SID** audio.
 
 | Title Screen | 3D Tropical Archipelago |
 |---|---|
 | ![Title Screen](docs/screenshots/title.png) | ![Base Island Gameplay](docs/screenshots/gameplay.png) |
 
-| 320×200 Bitmap Tactical Radar | Raging Cyclone Tempest |
+| Tactical Radar | Raging Cyclone Tempest |
 |---|---|
-| ![320x200 Bitmap Tactical Map](docs/screenshots/radar_map.png) | ![Cyclone Storm](docs/screenshots/storm.png) |
+| ![320x200 Tactical Map](docs/screenshots/radar_map.png) | ![Cyclone Storm](docs/screenshots/storm.png) |
 
 ---
 
-## What This Is
+## About this game
 
-- **Authentic 1985 World Data**: Extracts the exact **768 × 768** 14-island tile atlas, 3D vertical slice stacks, and North/South viewpoint geometry directly from the original ZX Spectrum release (documented in [docs/gameplay_spec.md](docs/gameplay_spec.md)).
-- **True C64 Hardware Showcase (Single-Load 50 KB `.prg`, No Cartridges or Expansions)**:
-  - **50/60 Hz 8-Way Hardware Scrolling**: Double-buffered VIC-II Multicolor playfield with unrolled 18-row Color RAM shifting and a 5-stage FLD raster IRQ split locking a 4-row Hi-Res Cockpit HUD across both PAL and NTSC.
-  - **8-Layer Hardware Sprites (62 Static Frames under I/O `$D000–$DFFF`)**: Hi-Res spinning rotor (Sprite 0) layered *in front of* a 16-angle Multicolor helicopter fuselage (Sprite 1), Dark Grey terrain-hugging 3D ground shadow (Sprite 2), animated winch cable (Sprite 3), 2× swirling red Cyclone funnel & storm rain / low-flying jets (Sprites 4–5), and pulsing medical crates & waving survivors (Sprites 6–7).
-  - **True 320×200 VIC-II Bitmap Tactical Radar (`M` / `Space`)**: Switches VIC-II into Hi-Res Bitmap Mode (`BMM=1`, `$E000–$FF3F`) by temporarily backing up active charsets into `$C000/$C400` and restoring them losslessly on exit — rendering all 14 pixel-accurate coastlines, 7 white helipad crosses, a 3×3 sector grid, and live pulsing sprites in ~0.15 s.
-  - **3-Voice Filtered SID Audio (MOS 6581 & 8580 Auto-Calibrated)**: Auto-detects the SID revision at boot to calibrate filter cutoffs across both chips — Voice 1 synthesizes speed-coupled rotor blade thumps, Voice 2 drives resonant Cyclone wind & rolling low-pass thunder, and Voice 3 handles priority SFX (winch servo, crate/survivor chimes, Doppler jet flybys, low-fuel klaxon, crash explosions, and fanfares), plus an original 3-voice SID title theme and radar sonar pings.
+- This was done as a fully AI port with Antigravity and Genini 4 Neon.
+- Extracts the exact **768 × 768** 14-island tile atlas, 3D vertical slice stacks, and North/South viewpoint geometry directly from the original release (documented in [docs/gameplay_spec.md](docs/gameplay_spec.md)).
+- **Single-Load 50 KB `.prg`, No Cartridges or Expansions**:
+  - **50/60 Hz 8-Way Hardware Scrolling**: Double-buffered VIC-II Multicolor playfield 18-row Color RAM shifting and IRQ split with a 4-row Hi-Res Cockpit HUD across both PAL and NTSC.
+  - **Hardware Sprites**
+  for spinning rotor, helicopter, ground shadow.
+  - **Tactical Radar (`M` / `Space`)**.
+  - **3-Voice Filtered SID Audio (MOS 6581 & 8580 Auto-Calibrated)**: Auto-detects the SID revision at boot to calibrate filter cutoffs across both chips.
 
 ---
 

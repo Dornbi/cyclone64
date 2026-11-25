@@ -39,7 +39,8 @@ ZX_BRIGHT = [
 
 def load_tap_memory():
     with zipfile.ZipFile(ZIP_PATH) as outer:
-        tap_zip_data = outer.read("Cyclone (1985)(Vortex Software).TAP.zip")
+        tap_zips = [n for n in outer.namelist() if n.endswith(".TAP.zip") and "[a" not in n]
+        tap_zip_data = outer.read(tap_zips[0])
         with zipfile.ZipFile(io.BytesIO(tap_zip_data)) as inner:
             data = inner.read(inner.namelist()[0])
 
