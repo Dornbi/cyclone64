@@ -32,7 +32,7 @@ A native **Commodore 64** port of the 1985 ZX Spectrum 3D helicopter rescue clas
 There are many online and offline C64 emulators. One of the easiest is https://ty64.krissz.hu/ — click the web icon and paste:
 
 ```
-https://github.com/Dornbi/cyclone/raw/refs/heads/main/bin/cyclone.prg
+https://github.com/Dornbi/cyclone64/raw/refs/heads/main/bin/cyclone.prg
 ```
 
 Alternatively, download the release binary directly and upload or load it into any online or offline C64 emulator:
