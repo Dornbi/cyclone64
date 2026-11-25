@@ -26,7 +26,7 @@ Extracted directly from `Cyclone (1985)(Vortex Software).tap` (`Cyclone3` loaded
 
 - **Initial Helicopter Position**: Sector `(1, 1)`, pos `(57, 112)` -> world `(313, 368)`, resting directly on **BASE ISLAND**'s western 4×3 white helipad (`tile 0x1F`).
 
-## 2. Costa Panayi's 3D Stacked-Slice Projection Engine
+## 2. 3D Stacked-Slice Projection Engine
 - Across the entire archipelago, **130 unique tile IDs** are used, built from only **62 unique 8×8 graphic slices** (`extracted/tiles.json`, `extracted/slices_spectrum.png`).
 - Each tile ID defines a vertical stack of `1..8` slices (`height = z`), stored separately for **North View** (`$6300–$6AFF`) and **South View** (`$6C00–$73FF`), terminated by `$FF`:
   - `z = 1`: Ocean (`$00`), sandy beaches (`$04–$0E`)

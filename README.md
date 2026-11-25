@@ -1,6 +1,6 @@
 # Cyclone — Commodore 64 Edition
 
-A native **Commodore 64** port of the 1985 ZX Spectrum 3D helicopter rescue classic **Cyclone** (Costa Panayi / Vortex Software), built from a clean-room reverse engineering of the original Z80 archipelago map and gameplay logic and re-engineered in C ([Oscar64](https://github.com/drmortalwombat/oscar64)) to take full advantage of C64 **VIC-II** graphics and **SID** audio.
+A native **Commodore 64** port of the 1985 ZX Spectrum 3D helicopter rescue classic **Cyclone** (Vortex Software), built from a clean-room reverse engineering of the original Z80 archipelago map and gameplay logic and re-engineered in C ([Oscar64](https://github.com/drmortalwombat/oscar64)) to take full advantage of C64 **VIC-II** graphics and **SID** audio.
 
 | Title Screen | 3D Tropical Archipelago |
 |---|---|
@@ -113,4 +113,4 @@ See [docs/testing_plan.md](docs/testing_plan.md) for details on the 16 automated
 
 ## License
 
-Source code and tooling are released under the **BSD 3-Clause License** — see [LICENSE](LICENSE). Original *Cyclone* (1985) concept and archipelago design by Costa Panayi / Vortex Software.
+Source code and tooling are released under the **BSD 3-Clause License** — see [LICENSE](LICENSE). Original *Cyclone* (1985) concept and archipelago design by Vortex Software.
